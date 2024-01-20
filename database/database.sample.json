@@ -1,0 +1,10 @@
+{
+    "dev": {
+        "driver": "pg",
+        "user": "",
+        "password": "",
+        "host": "",
+        "database": ""
+    },
+    "sql-file": true
+}
