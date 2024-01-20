@@ -66,3 +66,12 @@ values
 (
     'Hip'
 );
+
+insert into public.muscle_group
+(
+    muscle_group
+)
+values 
+(
+    'Neck'
+);
