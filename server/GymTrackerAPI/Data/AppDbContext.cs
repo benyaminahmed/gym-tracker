@@ -12,5 +12,7 @@ namespace GymTrackerAPI.Data
         public DbSet<User> User { get; set; }
 
         public DbSet<Exercise> Exercise { get; set; }
+
+        public DbSet<ExerciseTracking> ExerciseTracking { get; set; }
     }
 }
