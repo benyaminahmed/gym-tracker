@@ -8,5 +8,6 @@
 
         public float PerformanceMetric { get; set; }
 
+        public DateTime? CreatedDate { get; set; }
     }
 }

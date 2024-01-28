@@ -46,7 +46,8 @@ namespace GymTrackerAPI.Controllers
             {
                 ExerciseId = request.ExerciseId,
                 UserId = request.UserId,
-                PerformanceMetric = request.PerformanceMetric
+                PerformanceMetric = request.PerformanceMetric,
+                CreatedDate = request.CreatedDate ?? DateTime.UtcNow 
             };
             _context.ExerciseTracking.Add(et);
             await _context.SaveChangesAsync();
