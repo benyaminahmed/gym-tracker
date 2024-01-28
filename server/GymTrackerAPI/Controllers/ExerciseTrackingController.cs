@@ -51,5 +51,60 @@ namespace GymTrackerAPI.Controllers
             _context.ExerciseTracking.Add(et);
             await _context.SaveChangesAsync();
         }
+
+        [HttpGet(Name = "GetMaxExercisePerformanceMetric")]
+        public async Task<IEnumerable<MaxExercisePerformanceMetricByUser>> GetMaxExercisePerformanceMetric(Guid exerciseId)
+        {
+            var results = new List<MaxExercisePerformanceMetricByUser>();
+
+            var maxPerformancePerUser = await _context.ExerciseTracking
+                .Where(x => x.ExerciseId == exerciseId)
+                .GroupBy(x => x.UserId)
+                .Select(g => new
+                {
+                    UserId = g.Key,
+                    MaxPerformanceData = g.OrderByDescending(x => x.PerformanceMetric)
+                                          .ThenByDescending(x => x.CreatedDate)
+                                          .First()
+                })
+                .Select(x => new
+                {
+                    UserId = x.UserId,
+                    MaxPerformanceMetric = x.MaxPerformanceData.PerformanceMetric,
+                    MostRecentCreatedDateForMaxPerformance = x.MaxPerformanceData.CreatedDate
+                })
+                .ToListAsync();
+
+
+
+
+            var users = await _context.User.ToListAsync();
+
+            var exercise = await _context.Exercise.FirstAsync(x => x.ExerciseId == exerciseId);
+
+            for (int i = 0; i < maxPerformancePerUser.Count; i++)
+            {
+                var et = maxPerformancePerUser[i];
+                var user = users.First(x => x.UserId == et.UserId);
+
+                var record = new MaxExercisePerformanceMetricByUser()
+                {
+                    UserId = et.UserId,
+                    ExerciseId = exercise.ExerciseId,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    ExerciseName = exercise.ExerciseName,
+                    MaxPerformanceMetric = et.MaxPerformanceMetric,
+                    Unit = exercise.Unit,
+                    CreatedDate = et.MostRecentCreatedDateForMaxPerformance
+                };
+
+
+                results.Add(record);
+            }
+
+            return results;
+        }
     }
 }
+
