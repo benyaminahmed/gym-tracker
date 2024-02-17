@@ -6,8 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.SearchView
+import androidx.appcompat.R.id.search_mag_icon
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -48,19 +51,33 @@ class HomeFragment : Fragment() {
 
         return root
     }
-
     private fun setupSearchView() {
-        binding.searchExercise.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                performFiltering(query)
-                return true
-            }
+        // Make the SearchView always expanded
+        binding.searchExercise.apply {
+            setIconifiedByDefault(false) // Always show the search text input
 
-            override fun onQueryTextChange(newText: String?): Boolean {
-                performFiltering(newText)
-                return true
-            }
-        })
+            // Optional: if you want to remove the search icon when always expanded
+            findViewById<ImageView>(search_mag_icon)
+                ?.apply {
+                    layoutParams = LinearLayout.LayoutParams(0, 0)
+                    visibility = View.GONE
+                }
+
+            binding.searchExercise.queryHint = "Search"
+
+            // Set listeners for search text changes
+            binding.searchExercise.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    performFiltering(query)
+                    return true
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    performFiltering(newText)
+                    return true
+                }
+            })
+        }
     }
 
     private fun performFiltering(query: String?) {
