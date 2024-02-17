@@ -31,11 +31,14 @@
         android:label="@string/menu_slideshow"
         tools:layout="@layout/fragment_slideshow" />
 
-    <!-- Add ExerciseDetailsFragment -->
     <fragment
         android:id="@+id/exerciseDetailsFragment"
         android:name="com.example.gymtracker.ui.home.ExerciseDetailsFragment"
         android:label="Exercise Details"
-        tools:layout="@layout/fragment_exercise_details" />
+        tools:layout="@layout/fragment_exercise_details">
+        <argument
+            android:name="exerciseTitle"
+            app:argType="string" />
+    </fragment>
 
 </navigation>

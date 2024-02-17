@@ -14,6 +14,8 @@ import androidx.appcompat.R.id.search_mag_icon
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.example.gymtracker.R
 import com.example.gymtracker.databinding.FragmentHomeBinding
 
@@ -100,13 +102,16 @@ class HomeFragment : Fragment() {
 
     private fun setupListViewItemClickListener() {
         binding.exercisesListView.setOnItemClickListener { _, _, position, _ ->
+            
             // Get the selected exercise name
             val selectedExercise = exercisesList[position]
 
             // Use NavController to navigate
-            val action = HomeFragmentDirections.actionNavHomeToExerciseDetailsFragment(selectedExercise)
+            val action =
+                HomeFragmentDirections.actionNavHomeToExerciseDetailsFragment(selectedExercise)
             findNavController().navigate(action)
         }
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -1,10 +1,14 @@
 package com.example.gymtracker.ui.home
 
 import UserAdapter
+import android.app.DatePickerDialog
+import android.icu.util.Calendar
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,9 +31,30 @@ class ExerciseDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Example on how to set the title
-        val tvExerciseTitle = view.findViewById<TextView>(tvExerciseTitle)
+        val tvDateTitle: TextView = view.findViewById(R.id.tvDateTitle)
+        val currentDate = Calendar.getInstance()
+        val currentDateString = "${currentDate.get(Calendar.DAY_OF_MONTH)}/${currentDate.get(Calendar.MONTH) + 1}/${currentDate.get(Calendar.YEAR)}"
+        tvDateTitle.text = currentDateString
+
+        val btnDatePicker: ImageButton = view.findViewById(R.id.btnDatePicker)
+
+        btnDatePicker.setOnClickListener {
+            val now = Calendar.getInstance()
+            val datePickerDialog = DatePickerDialog(
+                requireContext(),
+                { _, year, month, dayOfMonth ->
+                    val selectedDate = "$dayOfMonth/${month + 1}/$year"
+                    tvDateTitle.text = selectedDate
+                },
+                now.get(Calendar.YEAR),
+                now.get(Calendar.MONTH),
+                now.get(Calendar.DAY_OF_MONTH)
+            )
+            datePickerDialog.show()
+        }
+
         // Get the title from arguments or set a default one
+        val tvExerciseTitle = view.findViewById<TextView>(tvExerciseTitle)
         tvExerciseTitle.text = arguments?.getString("exerciseTitle") ?: "Exercise"
 
         // Setup RecyclerView with an adapter to display users
@@ -46,7 +71,7 @@ class ExerciseDetailsFragment : Fragment() {
         // Handle numeric input, submit button, and date/time pickers
         setupNumericInput()
         setupSubmitButton()
-        setupDateAndTimePickers()
+        setupDatePickers()
     }
 
     private fun setupNumericInput() {
@@ -57,8 +82,9 @@ class ExerciseDetailsFragment : Fragment() {
         // Your logic here
     }
 
-    private fun setupDateAndTimePickers() {
-        // Your logic here for date and time pickers
+    private fun setupDatePickers() {
+        // Your logic here
+
     }
 
     companion object {
