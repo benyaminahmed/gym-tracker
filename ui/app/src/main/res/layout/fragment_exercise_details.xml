@@ -13,8 +13,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="24sp"
-        android:text="Exercise Title"
-        android:layout_marginBottom="8dp" />
+        android:layout_marginBottom="8dp"
+        android:gravity="center" />
 
     <!-- Horizontal Layout for Date Title and Calendar Icon -->
     <LinearLayout
@@ -31,15 +31,16 @@
             android:textSize="20sp" />
 
         <!-- Calendar Icon/Button -->
-        <com.google.android.material.button.MaterialButton
+        <ImageButton
             android:id="@+id/btnDatePicker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:icon="@drawable/ic_calendar"
-            app:backgroundTint="@android:color/transparent"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_calendar"
             android:contentDescription="@string/select_date"
-            app:iconTint="@color/teal_200"
-            style="@style/Widget.MaterialComponents.Button.Icon"/>
+            android:padding="8dp"
+            android:clickable="true"
+            android:focusable="true" />
         </LinearLayout>
 
     <!-- List of Users -->
