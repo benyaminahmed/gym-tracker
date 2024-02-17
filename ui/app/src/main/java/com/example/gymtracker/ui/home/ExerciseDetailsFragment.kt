@@ -17,6 +17,7 @@ import com.example.gymtracker.R
 import com.example.gymtracker.R.id.rvUsers
 import com.example.gymtracker.R.id.tvExerciseTitle
 import com.example.gymtracker.network.User
+import com.google.android.material.button.MaterialButton
 import java.util.UUID
 
 class ExerciseDetailsFragment : Fragment() {
@@ -36,7 +37,7 @@ class ExerciseDetailsFragment : Fragment() {
         val currentDateString = "${currentDate.get(Calendar.DAY_OF_MONTH)}/${currentDate.get(Calendar.MONTH) + 1}/${currentDate.get(Calendar.YEAR)}"
         tvDateTitle.text = currentDateString
 
-        val btnDatePicker: ImageButton = view.findViewById(R.id.btnDatePicker)
+        val btnDatePicker: MaterialButton = view.findViewById(R.id.btnDatePicker)
 
         btnDatePicker.setOnClickListener {
             val now = Calendar.getInstance()
