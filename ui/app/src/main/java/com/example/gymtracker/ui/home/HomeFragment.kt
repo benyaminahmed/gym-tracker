@@ -1,6 +1,7 @@
 package com.example.gymtracker.ui.home
 
 import Exercise
+import HomeViewModel
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,14 +19,14 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+        val homeViewModel = ViewModelProvider(this)[HomeViewModel::class.java]
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         // Setup Spinner
         homeViewModel.exercises.observe(viewLifecycleOwner, Observer<List<Exercise>> { exercises ->
-            val adapter = ArrayAdapter(requireContext(), R.layout.exer, exercises.map { it.exerciseName })
+            val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, exercises.map { it.exerciseName })
             binding.exercisesSpinner.adapter = adapter
         })
 
