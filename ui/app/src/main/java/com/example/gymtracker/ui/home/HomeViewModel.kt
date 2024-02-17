@@ -17,7 +17,7 @@ class HomeViewModel : ViewModel() {
 
     object RetrofitService {
         private val retrofit = Retrofit.Builder()
-            .baseUrl("https://localhost:7195/")
+            .baseUrl("https://gymtrackerapi20240217112930.azurewebsites.net/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 

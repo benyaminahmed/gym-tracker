@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ProgressBar
+import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -18,23 +19,64 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
+    private lateinit var adapter: ArrayAdapter<String>
+    private var exercisesList: List<String> = listOf()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val homeViewModel = ViewModelProvider(this)[HomeViewModel::class.java]
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        // Setup List View
+        // Initialize the adapter with an empty list
+        adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, arrayListOf())
+        binding.exercisesListView.adapter = adapter
+
         homeViewModel.exercises.observe(viewLifecycleOwner) { exercises ->
-            val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, exercises.map { it.exerciseName })
-            binding.exercisesListView.adapter = adapter
+            exercisesList = exercises.map { it.exerciseName }
+            // Update the adapter's dataset directly without re-initializing it
+            adapter.clear()
+            adapter.addAll(exercisesList)
+            adapter.notifyDataSetChanged()
         }
+
         homeViewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
-            val progressBar = root.findViewById<ProgressBar>(R.id.progress_bar_fetch_exercises)
-            progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+            binding.progressBarFetchExercises.visibility = if (isLoading) View.VISIBLE else View.GONE
         })
 
+        setupSearchView()
+
         return root
+    }
+
+    private fun setupSearchView() {
+        binding.searchExercise.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                performFiltering(query)
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                performFiltering(newText)
+                return true
+            }
+        })
+    }
+
+    private fun performFiltering(query: String?) {
+        query?.let {
+            val filteredList = exercisesList.filter {
+                it.lowercase().contains(query.lowercase())
+            }
+            adapter.clear()
+            adapter.addAll(filteredList)
+            adapter.notifyDataSetChanged()
+        } ?: run {
+            // If query is null or empty, reset the list to the original dataset
+            adapter.clear()
+            adapter.addAll(exercisesList)
+            adapter.notifyDataSetChanged()
+        }
     }
 
     override fun onDestroyView() {
@@ -42,3 +84,4 @@ class HomeFragment : Fragment() {
         _binding = null
     }
 }
+
