@@ -49,6 +49,8 @@ class HomeFragment : Fragment() {
 
         setupSearchView()
 
+        setupListViewItemClickListener()
+
         return root
     }
     private fun setupSearchView() {
@@ -95,6 +97,16 @@ class HomeFragment : Fragment() {
             adapter.notifyDataSetChanged()
         }
     }
+
+    private fun setupListViewItemClickListener() {
+        binding.exercisesListView.setOnItemClickListener { _, _, position, _ ->
+            // Get the selected exercise name
+            val selectedExercise = exercisesList[position]
+
+            // Use NavController to navigate
+            val action = HomeFragmentDirections.actionNavHomeToExerciseDetailsFragment(selectedExercise)
+            findNavController().navigate(action)
+        }
 
     override fun onDestroyView() {
         super.onDestroyView()
