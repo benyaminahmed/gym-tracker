@@ -13,7 +13,7 @@ import retrofit2.Response
 
 
 
-class HomeViewModel : ViewModel() {
+class ExercisesViewModel : ViewModel() {
 
     object RetrofitService {
         private val retrofit = Retrofit.Builder()

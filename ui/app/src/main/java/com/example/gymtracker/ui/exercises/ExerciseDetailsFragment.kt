@@ -1,4 +1,4 @@
-package com.example.gymtracker.ui.home
+package com.example.gymtracker.ui.exercises
 
 import UserAdapter
 import android.app.DatePickerDialog
@@ -7,10 +7,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,7 +16,6 @@ import com.example.gymtracker.R
 import com.example.gymtracker.R.id.rvUsers
 import com.example.gymtracker.R.id.tvExerciseTitle
 import com.example.gymtracker.network.User
-import com.google.android.material.button.MaterialButton
 import java.util.UUID
 
 class ExerciseDetailsFragment : Fragment() {

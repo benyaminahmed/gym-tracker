@@ -3,15 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@+id/nav_exercises">
 
     <fragment
-        android:id="@+id/nav_home"
-        android:name="com.example.gymtracker.ui.home.HomeFragment"
-        android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" >
+        android:id="@+id/nav_exercises"
+        android:name="com.example.gymtracker.ui.exercises.ExercisesFragment"
+        android:label="@string/menu_exercises"
+        tools:layout="@layout/fragment_exercises" >
         <action
-            android:id="@+id/action_nav_home_to_exerciseDetailsFragment"
+            android:id="@+id/action_nav_exercises_to_exerciseDetailsFragment"
             app:destination="@id/exerciseDetailsFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
@@ -33,7 +33,7 @@
 
     <fragment
         android:id="@+id/exerciseDetailsFragment"
-        android:name="com.example.gymtracker.ui.home.ExerciseDetailsFragment"
+        android:name="com.example.gymtracker.ui.exercises.ExerciseDetailsFragment"
         android:label="Exercise Details"
         tools:layout="@layout/fragment_exercise_details">
         <argument
