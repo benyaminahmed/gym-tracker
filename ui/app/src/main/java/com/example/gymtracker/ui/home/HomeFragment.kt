@@ -24,11 +24,11 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        // Setup Spinner
-        homeViewModel.exercises.observe(viewLifecycleOwner, Observer<List<Exercise>> { exercises ->
-            val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, exercises.map { it.exerciseName })
-            binding.exercisesSpinner.adapter = adapter
-        })
+        // Setup List View
+        homeViewModel.exercises.observe(viewLifecycleOwner) { exercises ->
+            val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, exercises.map { it.exerciseName })
+            binding.exercisesListView.adapter = adapter
+        }
 
         return root
     }
