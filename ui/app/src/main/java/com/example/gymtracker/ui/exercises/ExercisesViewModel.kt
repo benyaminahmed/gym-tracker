@@ -9,6 +9,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import android.util.Log
 import androidx.lifecycle.ViewModelProvider
+import com.example.gymtracker.network.ExerciseTracking
 
 class ExercisesViewModel(private val apiService: ApiService) : ViewModel() {
 
@@ -18,12 +19,17 @@ class ExercisesViewModel(private val apiService: ApiService) : ViewModel() {
     private val _users = MutableLiveData<List<User>>()
     val users: LiveData<List<User>> = _users
 
+
+    private val _exerciseTracking = MutableLiveData<List<ExerciseTracking>>()
+    val exerciseTracking: LiveData<List<ExerciseTracking>> = _exerciseTracking
+
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
     init {
         fetchUsers()
         fetchExercises()
+        fetchExerciseTracking()
     }
 
     private fun fetchExercises() {
@@ -59,6 +65,21 @@ class ExercisesViewModel(private val apiService: ApiService) : ViewModel() {
 
             override fun onFailure(call: Call<List<User>>, t: Throwable) {
                 _isLoading.postValue(false)
+                Log.e("ExercisesViewModel", "Error fetching users", t)
+            }
+        })
+    }
+    private fun fetchExerciseTracking() {
+        apiService.getExerciseTracking().enqueue(object : Callback<List<ExerciseTracking>> {
+            override fun onResponse(call: Call<List<ExerciseTracking>>, response: Response<List<ExerciseTracking>>) {
+                if (response.isSuccessful) {
+                    _exerciseTracking.postValue(response.body())
+                } else {
+                    Log.e("ExercisesViewModel", "Failed to fetch exercise tracking: ${response.errorBody()?.string()}")
+                }
+            }
+
+            override fun onFailure(call: Call<List<ExerciseTracking>>, t: Throwable) {
                 Log.e("ExercisesViewModel", "Error fetching users", t)
             }
         })
