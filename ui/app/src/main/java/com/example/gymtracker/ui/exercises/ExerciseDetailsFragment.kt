@@ -4,6 +4,7 @@ import ExercisesViewModel
 import ExercisesViewModelFactory
 import UserAdapter
 import android.app.DatePickerDialog
+import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -23,6 +24,7 @@ import com.example.gymtracker.R.id.rvUsers
 import com.example.gymtracker.R.id.tvExerciseTitle
 import com.example.gymtracker.network.RetrofitService
 import com.example.gymtracker.network.User
+import java.util.Locale
 import java.util.UUID
 
 class ExerciseDetailsFragment : Fragment() {
@@ -41,9 +43,11 @@ class ExerciseDetailsFragment : Fragment() {
         val viewModelFactory = ExercisesViewModelFactory(apiService)
         val exercisesViewModel = ViewModelProvider(this, viewModelFactory).get(ExercisesViewModel::class.java)
 
+        // Set date to default to current
         val tvDateTitle: TextView = view.findViewById(R.id.tvDateTitle)
         val currentDate = Calendar.getInstance()
-        val currentDateString = "${currentDate.get(Calendar.DAY_OF_MONTH)}/${currentDate.get(Calendar.MONTH) + 1}/${currentDate.get(Calendar.YEAR)}"
+        val dateFormat = SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault())
+        val currentDateString = dateFormat.format(currentDate.time)
         tvDateTitle.text = currentDateString
 
         val btnDatePicker: ImageButton = view.findViewById(R.id.btnDatePicker)
