@@ -84,8 +84,10 @@ class ExerciseDetailsFragment : Fragment() {
 
         // Observe the users LiveData from the ViewModel
         exercisesViewModel.users.observe(viewLifecycleOwner) { users ->
-            // Update RecyclerView adapter
-            rvUsers.adapter = UserAdapter(users)
+            val adapter = UserAdapter(users) { selectedUser ->
+                // Handle user selection, e.g., update UI or perform an action with the selected user
+            }
+            rvUsers.adapter = adapter
             pbLoadingUsers.visibility = View.GONE // Hide loading symbol once users are loaded
         }
 

@@ -1,18 +1,31 @@
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gymtracker.R
 import com.example.gymtracker.network.User
+import java.util.UUID
 
-class UserAdapter(private val users: List<User>) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
+class UserAdapter(private val users: List<User>, private val onUserClicked: (User) -> Unit) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
 
-    class UserViewHolder(view: View) : RecyclerView.ViewHolder(/* itemView = */ view) {
-        private val userName: TextView = view.findViewById(R.id.tvUserName)
+    private var selectedUserId: UUID? = null
 
-        fun bind(user: User) {
-            userName.text = "${user.firstName} ${user.lastName}"
+    inner class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val userName: TextView = itemView.findViewById(R.id.tvUserName)
+
+        private val tvUserName: TextView = itemView.findViewById(R.id.tvUserName)
+        private val ivSelectedIcon: ImageView = itemView.findViewById(R.id.ivSelectedIcon)
+        fun bind(user: User, isSelected: Boolean) {
+            tvUserName.text = "${user.firstName} ${user.lastName}"
+            ivSelectedIcon.visibility = if (isSelected) View.VISIBLE else View.GONE
+
+            itemView.setOnClickListener {
+                selectedUserId = user.userId
+                notifyDataSetChanged() // Refresh the list to update the selection state
+                onUserClicked(user)
+            }
         }
     }
 
@@ -22,8 +35,9 @@ class UserAdapter(private val users: List<User>) : RecyclerView.Adapter<UserAdap
     }
 
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
-        holder.bind(users[position])
+        val user = users[position]
+        holder.bind(user, user.userId == selectedUserId)
     }
 
     override fun getItemCount() = users.size
-}
+    }
