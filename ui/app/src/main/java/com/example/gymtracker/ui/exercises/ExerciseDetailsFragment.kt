@@ -15,20 +15,19 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gymtracker.R
-import com.example.gymtracker.R.id.rvUsers
 import com.example.gymtracker.R.id.tvExerciseTitle
 import com.example.gymtracker.network.RetrofitService
-import com.example.gymtracker.network.User
 import java.util.Locale
-import java.util.UUID
 
 class ExerciseDetailsFragment : Fragment() {
 
+    private lateinit var userAdapter: UserAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -71,24 +70,17 @@ class ExerciseDetailsFragment : Fragment() {
         val tvExerciseTitle = view.findViewById<TextView>(tvExerciseTitle)
         tvExerciseTitle.text = arguments?.getString("exerciseTitle") ?: "Exercise"
 
-        // Setup RecyclerView with an adapter to display users
-        val rvUsers = view.findViewById<RecyclerView>(R.id.rvUsers)
-        rvUsers.layoutManager = LinearLayoutManager(context)
-
+        setupUserAdapterAndRecyclerView(view)
 
         // Reference to ProgressBar, EditText for achievement, and Submit Button
         val pbLoadingUsers = view.findViewById<ProgressBar>(R.id.pbLoadingUsersExerciseDetails)
         val etNumericInput = view.findViewById<EditText>(R.id.etNumericInput)
         val btnSubmit = view.findViewById<Button>(R.id.btnSubmit)
 
-
         // Observe the users LiveData from the ViewModel
         exercisesViewModel.users.observe(viewLifecycleOwner) { users ->
-            val adapter = UserAdapter(users) { selectedUser ->
-                // Handle user selection, e.g., update UI or perform an action with the selected user
-            }
-            rvUsers.adapter = adapter
-            pbLoadingUsers.visibility = View.GONE // Hide loading symbol once users are loaded
+            userAdapter.updateUsers(users)
+            pbLoadingUsers.visibility = View.GONE
         }
 
         // Observe isLoading LiveData
@@ -106,23 +98,52 @@ class ExerciseDetailsFragment : Fragment() {
             }
         }
 
-        // Handle numeric input, submit button, and date/time pickers
-        setupNumericInput()
-        setupSubmitButton()
-        setupDatePickers()
+        setUpValidation(view)
     }
 
-    private fun setupNumericInput() {
-        // Your logic here
+    private fun setupUserAdapterAndRecyclerView(view: View) {
+        // Assuming rvUsers is your RecyclerView
+        val rvUsers = view.findViewById<RecyclerView>(R.id.rvUsers)
+        rvUsers.layoutManager = LinearLayoutManager(context)
+
+        // Initialize userAdapter here
+        userAdapter = UserAdapter(emptyList()) { selectedUser ->
+            // Handle user selection
+        }
+        rvUsers.adapter = userAdapter
+
+        // Now userAdapter is initialized and can be safely used elsewhere
     }
 
-    private fun setupSubmitButton() {
-        // Your logic here
+    private fun setUpValidation(view: View) {
+        val etNumericInput = view.findViewById<EditText>(R.id.etNumericInput)
+        val btnSubmit = view.findViewById<Button>(R.id.btnSubmit)
+
+        btnSubmit.setOnClickListener {
+            val selectedUser = userAdapter.getSelectedUser()
+            val numericInputValid = validateInput(etNumericInput.text.toString())
+
+            if (selectedUser != null && numericInputValid) {
+                // User is selected and numeric input is valid
+                // Proceed with your logic, e.g., process data, navigate, etc.
+            } else {
+                if (selectedUser == null) {
+                    Toast.makeText(requireContext(), "Please select a user", Toast.LENGTH_SHORT).show()
+                }
+                if(!numericInputValid) {
+                    Toast.makeText(requireContext(), "Please enter a number greater than 0", Toast.LENGTH_LONG).show()
+
+                }
+             }
+        }
     }
-
-    private fun setupDatePickers() {
-        // Your logic here
-
+    private fun validateInput(input: String): Boolean {
+        return try {
+            val number = input.toInt()
+            number > 0
+        } catch (e: NumberFormatException) {
+            false // Input was not a number or was empty
+        }
     }
 
     companion object {

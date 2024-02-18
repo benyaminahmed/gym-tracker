@@ -20,5 +20,5 @@
         android:layout_height="wrap_content"
         android:src="@drawable/ic_check_circle"
         android:visibility="gone"
-        android:layout_gravity="center_vertical"/> 
+        android:layout_gravity="center_vertical"/>
 </LinearLayout>
