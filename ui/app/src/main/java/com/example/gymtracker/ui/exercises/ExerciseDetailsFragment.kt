@@ -1,5 +1,6 @@
 package com.example.gymtracker.ui.exercises
 
+import ExercisesViewModel
 import UserAdapter
 import android.app.DatePickerDialog
 import android.icu.util.Calendar
@@ -10,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gymtracker.R
@@ -29,7 +31,7 @@ class ExerciseDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        val exercisesViewModel = ViewModelProvider(this)[ExercisesViewModel::class.java]
         val tvDateTitle: TextView = view.findViewById(R.id.tvDateTitle)
         val currentDate = Calendar.getInstance()
         val currentDateString = "${currentDate.get(Calendar.DAY_OF_MONTH)}/${currentDate.get(Calendar.MONTH) + 1}/${currentDate.get(Calendar.YEAR)}"
@@ -57,15 +59,15 @@ class ExerciseDetailsFragment : Fragment() {
         tvExerciseTitle.text = arguments?.getString("exerciseTitle") ?: "Exercise"
 
         // Setup RecyclerView with an adapter to display users
-        val mockUsers = listOf(
-            User(UUID.randomUUID(), "John", "Doe"),
-            User(UUID.randomUUID(), "Jane", "Doe"),
-            User(UUID.randomUUID(), "Jim", "Beam")
-        )
-
-        val rvUsers = view.findViewById<RecyclerView>(rvUsers)
+        // Setup RecyclerView
+        val rvUsers = view.findViewById<RecyclerView>(R.id.rvUsers)
         rvUsers.layoutManager = LinearLayoutManager(context)
-        rvUsers.adapter = UserAdapter(mockUsers)
+
+        // Observe the users LiveData from the ViewModel
+        exercisesViewModel.users.observe(viewLifecycleOwner) { users ->
+            // Update the RecyclerView adapter with the fetched users
+            rvUsers.adapter = UserAdapter(users)
+        }
 
         // Handle numeric input, submit button, and date/time pickers
         setupNumericInput()

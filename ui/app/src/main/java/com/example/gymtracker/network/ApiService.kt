@@ -6,4 +6,7 @@ import retrofit2.http.GET
 interface ApiService {
     @GET("exercise")
     fun getExercises(): Call<List<Exercise>>
+
+    @GET("user")
+    fun getUsers(): Call<List<User>>
 }
