@@ -1,6 +1,7 @@
 package com.example.gymtracker.ui.exercises
 
 import ExercisesViewModel
+import ExercisesViewModelFactory
 import UserAdapter
 import android.app.DatePickerDialog
 import android.icu.util.Calendar
@@ -8,7 +9,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -17,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.gymtracker.R
 import com.example.gymtracker.R.id.rvUsers
 import com.example.gymtracker.R.id.tvExerciseTitle
+import com.example.gymtracker.network.RetrofitService
 import com.example.gymtracker.network.User
 import java.util.UUID
 
@@ -31,7 +36,11 @@ class ExerciseDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val exercisesViewModel = ViewModelProvider(this)[ExercisesViewModel::class.java]
+
+        val apiService = RetrofitService.create(requireContext())
+        val viewModelFactory = ExercisesViewModelFactory(apiService)
+        val exercisesViewModel = ViewModelProvider(this, viewModelFactory).get(ExercisesViewModel::class.java)
+
         val tvDateTitle: TextView = view.findViewById(R.id.tvDateTitle)
         val currentDate = Calendar.getInstance()
         val currentDateString = "${currentDate.get(Calendar.DAY_OF_MONTH)}/${currentDate.get(Calendar.MONTH) + 1}/${currentDate.get(Calendar.YEAR)}"
@@ -59,14 +68,36 @@ class ExerciseDetailsFragment : Fragment() {
         tvExerciseTitle.text = arguments?.getString("exerciseTitle") ?: "Exercise"
 
         // Setup RecyclerView with an adapter to display users
-        // Setup RecyclerView
         val rvUsers = view.findViewById<RecyclerView>(R.id.rvUsers)
         rvUsers.layoutManager = LinearLayoutManager(context)
 
+
+        // Reference to ProgressBar, EditText for achievement, and Submit Button
+        val pbLoadingUsers = view.findViewById<ProgressBar>(R.id.pbLoadingUsersExerciseDetails)
+        val etNumericInput = view.findViewById<EditText>(R.id.etNumericInput)
+        val btnSubmit = view.findViewById<Button>(R.id.btnSubmit)
+
+
         // Observe the users LiveData from the ViewModel
         exercisesViewModel.users.observe(viewLifecycleOwner) { users ->
-            // Update the RecyclerView adapter with the fetched users
+            // Update RecyclerView adapter
             rvUsers.adapter = UserAdapter(users)
+            pbLoadingUsers.visibility = View.GONE // Hide loading symbol once users are loaded
+        }
+
+        // Observe isLoading LiveData
+        exercisesViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            if (isLoading) {
+                // Show loading spinner and hide EditText and Button
+                pbLoadingUsers.visibility = View.VISIBLE
+                etNumericInput.visibility = View.GONE
+                btnSubmit.visibility = View.GONE
+            } else {
+                // Hide loading spinner and show EditText and Button
+                pbLoadingUsers.visibility = View.GONE
+                etNumericInput.visibility = View.VISIBLE
+                btnSubmit.visibility = View.VISIBLE
+            }
         }
 
         // Handle numeric input, submit button, and date/time pickers

@@ -1,7 +1,9 @@
 package com.example.gymtracker.ui.exercises
 
 import ExercisesViewModel
+import ExercisesViewModelFactory
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +17,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.gymtracker.databinding.FragmentExercisesBinding
+import com.example.gymtracker.network.RetrofitService
 
 class ExercisesFragment : Fragment() {
 
@@ -25,7 +28,9 @@ class ExercisesFragment : Fragment() {
     private var exercisesList: List<String> = listOf()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val homeViewModel = ViewModelProvider(this)[ExercisesViewModel::class.java]
+        val apiService = RetrofitService.create(requireContext())
+        val viewModelFactory = ExercisesViewModelFactory(apiService)
+        val exercisesViewModel = ViewModelProvider(this, viewModelFactory).get(ExercisesViewModel::class.java)
 
         _binding = FragmentExercisesBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -34,7 +39,8 @@ class ExercisesFragment : Fragment() {
         adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, arrayListOf())
         binding.exercisesListView.adapter = adapter
 
-        homeViewModel.exercises.observe(viewLifecycleOwner) { exercises ->
+        exercisesViewModel.exercises.observe(viewLifecycleOwner) { exercises ->
+            Log.i("exercises ", exercises.size.toString())
             exercisesList = exercises.map { it.exerciseName }
             // Update the adapter's dataset directly without re-initializing it
             adapter.clear()
@@ -42,7 +48,7 @@ class ExercisesFragment : Fragment() {
             adapter.notifyDataSetChanged()
         }
 
-        homeViewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
+        exercisesViewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
             binding.progressBarFetchExercises.visibility = if (isLoading) View.VISIBLE else View.GONE
         })
 

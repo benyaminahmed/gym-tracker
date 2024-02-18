@@ -2,15 +2,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.LiveData
 import com.example.gymtracker.network.ApiService
-import com.example.gymtracker.network.RetrofitService
 import com.example.gymtracker.network.Exercise
 import com.example.gymtracker.network.User
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import android.util.Log
+import androidx.lifecycle.ViewModelProvider
 
-class ExercisesViewModel : ViewModel() {
+class ExercisesViewModel(private val apiService: ApiService) : ViewModel() {
 
     private val _exercises = MutableLiveData<List<Exercise>>()
     val exercises: LiveData<List<Exercise>> = _exercises
@@ -28,7 +28,6 @@ class ExercisesViewModel : ViewModel() {
 
     private fun fetchExercises() {
         _isLoading.value = true
-        val apiService = RetrofitService.apiService
         apiService.getExercises().enqueue(object : Callback<List<Exercise>> {
             override fun onResponse(call: Call<List<Exercise>>, response: Response<List<Exercise>>) {
                 _isLoading.postValue(false)
@@ -48,7 +47,6 @@ class ExercisesViewModel : ViewModel() {
 
     private fun fetchUsers() {
         _isLoading.value = true
-        val apiService = RetrofitService.apiService
         apiService.getUsers().enqueue(object : Callback<List<User>> {
             override fun onResponse(call: Call<List<User>>, response: Response<List<User>>) {
                 _isLoading.postValue(false)
@@ -64,5 +62,15 @@ class ExercisesViewModel : ViewModel() {
                 Log.e("ExercisesViewModel", "Error fetching users", t)
             }
         })
+    }
+}
+
+class ExercisesViewModelFactory(private val apiService: ApiService) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(ExercisesViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return ExercisesViewModel(apiService) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

@@ -41,7 +41,15 @@
             android:padding="8dp"
             android:clickable="true"
             android:focusable="true" />
-        </LinearLayout>
+    </LinearLayout>
+
+    <!-- ProgressBar for loading indication -->
+    <ProgressBar
+        android:id="@+id/pbLoadingUsersExerciseDetails"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:visibility="gone" /> <!-- Initially hidden -->
 
     <!-- List of Users -->
     <androidx.recyclerview.widget.RecyclerView
