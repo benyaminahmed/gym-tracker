@@ -3,6 +3,7 @@ package com.example.gymtracker.ui.exercises
 import ExercisesViewModel
 import ExercisesViewModelFactory
 import UserAdapter
+import UserWithPerformance
 import android.app.DatePickerDialog
 import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
@@ -68,7 +69,8 @@ class ExerciseDetailsFragment : Fragment() {
 
         // Get the title from arguments or set a default one
         val tvExerciseTitle = view.findViewById<TextView>(tvExerciseTitle)
-        tvExerciseTitle.text = arguments?.getString("exerciseTitle") ?: "Exercise"
+        val exerciseName =  arguments?.getString("exerciseTitle") ?: "Exercise";
+        tvExerciseTitle.text = exerciseName
 
         setupUserAdapterAndRecyclerView(view)
 
@@ -76,12 +78,6 @@ class ExerciseDetailsFragment : Fragment() {
         val pbLoadingUsers = view.findViewById<ProgressBar>(R.id.pbLoadingUsersExerciseDetails)
         val etNumericInput = view.findViewById<EditText>(R.id.etNumericInput)
         val btnSubmit = view.findViewById<Button>(R.id.btnSubmit)
-
-        // Observe the users LiveData from the ViewModel
-        exercisesViewModel.users.observe(viewLifecycleOwner) { users ->
-            userAdapter.updateUsers(users)
-            pbLoadingUsers.visibility = View.GONE
-        }
 
         // Observe isLoading LiveData
         exercisesViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
@@ -97,7 +93,21 @@ class ExerciseDetailsFragment : Fragment() {
                 btnSubmit.visibility = View.VISIBLE
             }
         }
-
+        exercisesViewModel.exercises.observe(viewLifecycleOwner) { exercises ->
+            exercisesViewModel.exerciseTracking.observe(viewLifecycleOwner) { exerciseTracking ->
+                exercisesViewModel.users.observe(viewLifecycleOwner) { users ->
+                    val exerciseId = exercises.firstOrNull { it.exerciseName == exerciseName }?.exerciseId
+                    val combinedData = users.map { user ->
+                        val maxPerformance = exerciseTracking
+                            .filter { it.userId == user.userId && it.exerciseId == exerciseId }
+                            .maxByOrNull { it.performanceMetric ?: 0 }
+                        UserWithPerformance(user, maxPerformance)
+                    }
+                    userAdapter.updateUsers(combinedData)
+                    pbLoadingUsers.visibility = View.GONE
+                }
+            }
+        }
         setUpValidation(view)
     }
 
@@ -111,8 +121,6 @@ class ExerciseDetailsFragment : Fragment() {
             // Handle user selection
         }
         rvUsers.adapter = userAdapter
-
-        // Now userAdapter is initialized and can be safely used elsewhere
     }
 
     private fun setUpValidation(view: View) {

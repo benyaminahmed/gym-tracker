@@ -10,6 +10,7 @@ import retrofit2.Response
 import android.util.Log
 import androidx.lifecycle.ViewModelProvider
 import com.example.gymtracker.network.ExerciseTracking
+import java.util.UUID
 
 class ExercisesViewModel(private val apiService: ApiService) : ViewModel() {
 
@@ -19,12 +20,13 @@ class ExercisesViewModel(private val apiService: ApiService) : ViewModel() {
     private val _users = MutableLiveData<List<User>>()
     val users: LiveData<List<User>> = _users
 
-
     private val _exerciseTracking = MutableLiveData<List<ExerciseTracking>>()
     val exerciseTracking: LiveData<List<ExerciseTracking>> = _exerciseTracking
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
+
+    private var exercisesList: List<Exercise> = listOf()
 
     init {
         fetchUsers()
@@ -32,13 +34,25 @@ class ExercisesViewModel(private val apiService: ApiService) : ViewModel() {
         fetchExerciseTracking()
     }
 
+    //maxPerformance contains the maximum performance entry for each user for the given exerciseId.
+    fun getMaximumPerformanceForExercise(exerciseId: UUID) {
+        val maxPerformance = _exerciseTracking.value
+            ?.filter { it.exerciseId == exerciseId }
+            ?.groupBy { it.userId }
+            ?.map { entry ->
+                entry.value.maxByOrNull { it.performanceMetric }!!
+            } ?: listOf()
+    }
+
+
     private fun fetchExercises() {
         _isLoading.value = true
         apiService.getExercises().enqueue(object : Callback<List<Exercise>> {
             override fun onResponse(call: Call<List<Exercise>>, response: Response<List<Exercise>>) {
                 _isLoading.postValue(false)
                 if (response.isSuccessful) {
-                    _exercises.postValue(response.body())
+                    exercisesList = response.body() ?: listOf()
+                    _exercises.postValue(exercisesList)
                 } else {
                     Log.e("ExercisesViewModel", "Failed to fetch exercises: ${response.errorBody()?.string()}")
                 }
@@ -49,6 +63,10 @@ class ExercisesViewModel(private val apiService: ApiService) : ViewModel() {
                 Log.e("ExercisesViewModel", "Error fetching exercises", t)
             }
         })
+    }
+
+    fun getExerciseIdByName(name: String): UUID? {
+        return exercisesList.firstOrNull { it.exerciseName == name }?.exerciseId
     }
 
     private fun fetchUsers() {
