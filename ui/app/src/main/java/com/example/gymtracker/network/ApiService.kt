@@ -4,9 +4,12 @@ import retrofit2.Call
 import retrofit2.http.GET
 
 interface ApiService {
-    @GET("exercise")
+    @GET("Exercise")
     fun getExercises(): Call<List<Exercise>>
 
-    @GET("user")
+    @GET("User")
     fun getUsers(): Call<List<User>>
+
+    @GET("/ExerciseTracking")
+    fun getExerciseTracking(): Call<List<ExerciseTracking>>
 }
