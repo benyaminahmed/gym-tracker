@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.gymtracker.network.ApiService
 import com.example.gymtracker.network.Exercise
+import com.example.gymtracker.network.RetrofitService
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -15,14 +16,6 @@ import retrofit2.Response
 
 class ExercisesViewModel : ViewModel() {
 
-    object RetrofitService {
-        private val retrofit = Retrofit.Builder()
-            .baseUrl("https://gymtrackerapi20240217112930.azurewebsites.net/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        val apiService: ApiService = retrofit.create(ApiService::class.java)
-    }
 
     private val _exercises = MutableLiveData<List<Exercise>>()
     val exercises: LiveData<List<Exercise>> = _exercises
