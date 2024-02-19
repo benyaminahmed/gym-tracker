@@ -40,6 +40,12 @@ class ExerciseDetailsFragment : Fragment() {
     private lateinit var userAdapter: UserAdapter
     private var exerciseId: UUID? = null
     private lateinit var exercisesViewModel: ExercisesViewModel
+    private lateinit var exerciseName: String
+
+    private lateinit var pbLoadingUsers: ProgressBar
+    private lateinit var etNumericInput: EditText
+    private lateinit var btnSubmit: Button
+    private var isFirstLoad = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -81,45 +87,17 @@ class ExerciseDetailsFragment : Fragment() {
 
         // Get the title from arguments or set a default one
         val tvExerciseTitle = view.findViewById<TextView>(tvExerciseTitle)
-        val exerciseName =  arguments?.getString("exerciseTitle") ?: "Exercise";
+        exerciseName =  arguments?.getString("exerciseTitle") ?: "Exercise";
         tvExerciseTitle.text = exerciseName
 
         setupUserAdapterAndRecyclerView(view)
 
         // Reference to ProgressBar, EditText for achievement, and Submit Button
-        val pbLoadingUsers = view.findViewById<ProgressBar>(R.id.pbLoadingUsersExerciseDetails)
-        val etNumericInput = view.findViewById<EditText>(R.id.etNumericInput)
-        val btnSubmit = view.findViewById<Button>(R.id.btnSubmit)
+        pbLoadingUsers = view.findViewById<ProgressBar>(R.id.pbLoadingUsersExerciseDetails)
+        etNumericInput = view.findViewById<EditText>(R.id.etNumericInput)
+        btnSubmit = view.findViewById<Button>(R.id.btnSubmit)
 
-        // Observe isLoading LiveData
-        exercisesViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            if (isLoading) {
-                // Show loading spinner and hide EditText and Button
-                pbLoadingUsers.visibility = View.VISIBLE
-                etNumericInput.visibility = View.GONE
-                btnSubmit.visibility = View.GONE
-            } else {
-                // Hide loading spinner and show EditText and Button
-                pbLoadingUsers.visibility = View.GONE
-                etNumericInput.visibility = View.VISIBLE
-                btnSubmit.visibility = View.VISIBLE
-            }
-        }
-        exercisesViewModel.exercises.observe(viewLifecycleOwner) { exercises ->
-            exercisesViewModel.exerciseTracking.observe(viewLifecycleOwner) { exerciseTracking ->
-                exercisesViewModel.users.observe(viewLifecycleOwner) { users ->
-                    exerciseId = exercises.firstOrNull { it.exerciseName == exerciseName }?.exerciseId
-                    val combinedData = users.map { user ->
-                        val maxPerformance = exerciseTracking
-                            .filter { it.userId == user.userId && it.exerciseId == exerciseId }
-                            .maxByOrNull { it.performanceMetric ?: 0.0 }
-                        UserWithPerformance(user, maxPerformance)
-                    }
-                    userAdapter.updateUsers(combinedData)
-                    pbLoadingUsers.visibility = View.GONE
-                }
-            }
-        }
+        refreshUserExerciseData()
         setUpSubmit(view)
     }
 
@@ -158,6 +136,7 @@ class ExerciseDetailsFragment : Fragment() {
                     exercisesViewModel.postResult.observe(viewLifecycleOwner) { isSuccess ->
                         if (isSuccess) {
                             Toast.makeText(requireContext(), "Data submitted successfully", Toast.LENGTH_SHORT).show()
+                            refreshUserExerciseData()
                         } else {
                             Toast.makeText(requireContext(), "Submission failed", Toast.LENGTH_LONG).show()
                         }
@@ -196,10 +175,39 @@ class ExerciseDetailsFragment : Fragment() {
 
     private fun validateInput(input: String): Boolean {
         return try {
-            val number = input.toInt()
+            val number = input.toDouble()
             number > 0
         } catch (e: NumberFormatException) {
-            false // Input was not a number or was empty
+            false
+        }
+    }
+
+    private fun refreshUserExerciseData() {
+        if (isFirstLoad) {
+            pbLoadingUsers.visibility = View.VISIBLE
+            etNumericInput.visibility = View.GONE
+            btnSubmit.visibility = View.GONE
+        }
+        exercisesViewModel.refreshData()
+        exercisesViewModel.exercises.observe(viewLifecycleOwner) { exercises ->
+            exercisesViewModel.exerciseTracking.observe(viewLifecycleOwner) { exerciseTracking ->
+                exercisesViewModel.users.observe(viewLifecycleOwner) { users ->
+                    if (isFirstLoad) {
+                        pbLoadingUsers.visibility = View.GONE
+                        etNumericInput.visibility = View.VISIBLE
+                        btnSubmit.visibility = View.VISIBLE
+                        isFirstLoad = false // Ensure this logic runs only once
+                    }
+                    exerciseId = exercises.firstOrNull { it.exerciseName == exerciseName }?.exerciseId
+                    val combinedData = users.map { user ->
+                        val maxPerformance = exerciseTracking
+                            .filter { it.userId == user.userId && it.exerciseId == exerciseId }
+                            .maxByOrNull { it.performanceMetric ?: 0.0 }
+                        UserWithPerformance(user, maxPerformance)
+                    }
+                    userAdapter.updateUsers(combinedData)
+                }
+            }
         }
     }
 

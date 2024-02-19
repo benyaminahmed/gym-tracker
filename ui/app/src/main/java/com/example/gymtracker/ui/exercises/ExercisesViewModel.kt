@@ -37,6 +37,10 @@ class ExercisesViewModel(private val apiService: ApiService) : ViewModel() {
     val postResult: LiveData<Boolean> = _postResult
 
     init {
+        refreshData()
+    }
+
+    fun refreshData() {
         fetchUsers()
         fetchExercises()
         fetchExerciseTracking()
