@@ -1,7 +1,10 @@
 package com.example.gymtracker.network
 
 import retrofit2.Call
+import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 
 interface ApiService {
     @GET("Exercise")
@@ -12,4 +15,7 @@ interface ApiService {
 
     @GET("/ExerciseTracking")
     fun getExerciseTracking(): Call<List<ExerciseTracking>>
+    @POST("/ExerciseTracking")
+    suspend fun postExerciseTracking(@Body exerciseTracking: ExerciseTrackingRequest): Response<Void>
+
 }

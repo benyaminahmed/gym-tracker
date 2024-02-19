@@ -9,7 +9,7 @@ data class ExerciseTracking(
     val firstName: String,
     val lastName: String,
     val exerciseName: String,
-    val performanceMetric: Int,
+    val performanceMetric: Double,
     val unit: String,
     val createdDate: LocalDateTime
 )

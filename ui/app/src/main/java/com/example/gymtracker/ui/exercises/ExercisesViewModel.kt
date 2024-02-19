@@ -9,7 +9,12 @@ import retrofit2.Callback
 import retrofit2.Response
 import android.util.Log
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.example.gymtracker.network.ExerciseTracking
+import com.example.gymtracker.network.ExerciseTrackingRequest
+import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import java.io.IOException
 import java.util.UUID
 
 class ExercisesViewModel(private val apiService: ApiService) : ViewModel() {
@@ -28,22 +33,14 @@ class ExercisesViewModel(private val apiService: ApiService) : ViewModel() {
 
     private var exercisesList: List<Exercise> = listOf()
 
+    private val _postResult = MutableLiveData<Boolean>()
+    val postResult: LiveData<Boolean> = _postResult
+
     init {
         fetchUsers()
         fetchExercises()
         fetchExerciseTracking()
     }
-
-    //maxPerformance contains the maximum performance entry for each user for the given exerciseId.
-    fun getMaximumPerformanceForExercise(exerciseId: UUID) {
-        val maxPerformance = _exerciseTracking.value
-            ?.filter { it.exerciseId == exerciseId }
-            ?.groupBy { it.userId }
-            ?.map { entry ->
-                entry.value.maxByOrNull { it.performanceMetric }!!
-            } ?: listOf()
-    }
-
 
     private fun fetchExercises() {
         _isLoading.value = true
@@ -65,10 +62,6 @@ class ExercisesViewModel(private val apiService: ApiService) : ViewModel() {
         })
     }
 
-    fun getExerciseIdByName(name: String): UUID? {
-        return exercisesList.firstOrNull { it.exerciseName == name }?.exerciseId
-    }
-
     private fun fetchUsers() {
         _isLoading.value = true
         apiService.getUsers().enqueue(object : Callback<List<User>> {
@@ -87,6 +80,7 @@ class ExercisesViewModel(private val apiService: ApiService) : ViewModel() {
             }
         })
     }
+
     private fun fetchExerciseTracking() {
         apiService.getExerciseTracking().enqueue(object : Callback<List<ExerciseTracking>> {
             override fun onResponse(call: Call<List<ExerciseTracking>>, response: Response<List<ExerciseTracking>>) {
@@ -101,6 +95,20 @@ class ExercisesViewModel(private val apiService: ApiService) : ViewModel() {
                 Log.e("ExercisesViewModel", "Error fetching users", t)
             }
         })
+    }
+    fun postExerciseTracking(exerciseTrackingRequest: ExerciseTrackingRequest) {
+        viewModelScope.launch {
+            try {
+                val response = apiService.postExerciseTracking(exerciseTrackingRequest)
+                if (response.isSuccessful) {
+                    _postResult.postValue(true)
+                } else {
+                    _postResult.postValue(false)
+                }
+            } catch (e: Exception) {
+                _postResult.postValue(false)
+            }
+        }
     }
 }
 
