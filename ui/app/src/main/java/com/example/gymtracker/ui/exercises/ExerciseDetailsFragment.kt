@@ -76,8 +76,10 @@ class ExerciseDetailsFragment : Fragment() {
             val datePickerDialog = DatePickerDialog(
                 requireContext(),
                 { _, year, month, dayOfMonth ->
-                    val selectedDate = "$dayOfMonth/${month + 1}/$year"
-                    tvDateTitle.text = selectedDate
+                    val selectedCalendar = Calendar.getInstance()
+                    selectedCalendar.set(year, month, dayOfMonth)
+                    val selectedDateString = dateFormat.format(selectedCalendar.time)
+                    tvDateTitle.text = selectedDateString
                 },
                 now.get(Calendar.YEAR),
                 now.get(Calendar.MONTH),

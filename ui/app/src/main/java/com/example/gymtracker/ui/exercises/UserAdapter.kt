@@ -22,7 +22,6 @@ class UserAdapter(private var users: List<UserWithPerformance>, private val onUs
         private val ivSelectedIcon: ImageView = itemView.findViewById(R.id.ivSelectedIcon)
         private val tvSubtitle: TextView = itemView.findViewById(R.id.tvSubtitle)
 
-
         @RequiresApi(Build.VERSION_CODES.O)
         fun bind(up: UserWithPerformance, isSelected: Boolean) {
             tvUserName.text = "${up.user.firstName} ${up.user.lastName}"
@@ -47,12 +46,17 @@ class UserAdapter(private var users: List<UserWithPerformance>, private val onUs
         val daysBetween = ChronoUnit.DAYS.between(createdDate, now)
         return when {
             daysBetween == 0L -> "today"
-            daysBetween in 1..6 -> "$daysBetween days ago"
-            daysBetween in 7..29 -> "${daysBetween / 7} weeks ago"
-            daysBetween in 30..364 -> "${daysBetween / 30} months ago"
+            daysBetween == 1L -> "$daysBetween day ago" // Singular for 1 day
+            daysBetween in 2..6 -> "$daysBetween days ago"
+            daysBetween / 7 == 1L -> "${daysBetween / 7} week ago" // Singular for 1 week
+            daysBetween in 8..29 -> "${daysBetween / 7} weeks ago"
+            daysBetween / 30 == 1L -> "${daysBetween / 30} month ago" // Singular for 1 month
+            daysBetween in 31..364 -> "${daysBetween / 30} months ago"
+            daysBetween / 365 == 1L -> "${daysBetween / 365} year ago" // Singular for 1 year
             else -> "${daysBetween / 365} years ago"
         }
     }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.user_list_item, parent, false)
         return UserViewHolder(view)
