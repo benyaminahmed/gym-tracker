@@ -9,13 +9,13 @@
               <type value="RUNNING_DEVICE_TARGET" />
               <deviceKey>
                 <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="C:\Users\imran\.android\avd\Pixel_3a_XL_API_34.avd" />
+                  <type value="SERIAL_NUMBER" />
+                  <value value="192.168.1.165:39429" />
                 </Key>
               </deviceKey>
             </Target>
           </runningDeviceTargetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-02-19T18:40:41.833413100Z" />
+          <timeTargetWasSelectedWithDropDown value="2024-02-19T18:57:23.417213800Z" />
         </State>
       </entry>
     </value>
