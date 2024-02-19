@@ -37,7 +37,10 @@
         android:label="Exercise Details"
         tools:layout="@layout/fragment_exercise_details">
         <argument
-            android:name="exerciseTitle"
+            android:name="exerciseName"
+            app:argType="string" />
+        <argument
+            android:name="exerciseId"
             app:argType="string" />
     </fragment>
 

@@ -2,6 +2,7 @@ package com.example.gymtracker.ui.exercises
 
 import ExercisesViewModel
 import ExercisesViewModelFactory
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,12 +12,14 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.SearchView
+import androidx.annotation.RequiresApi
 import androidx.appcompat.R.id.search_mag_icon
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.gymtracker.databinding.FragmentExercisesBinding
+import com.example.gymtracker.network.Exercise
 import com.example.gymtracker.network.RetrofitService
 
 class ExercisesFragment : Fragment() {
@@ -25,8 +28,11 @@ class ExercisesFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var adapter: ArrayAdapter<String>
-    private var exercisesList: List<String> = listOf()
+    private var exercisesList: List<Exercise> = listOf()
+    private var exercisesMap: Map<String, Exercise> = emptyMap()
 
+
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val apiService = RetrofitService.create(requireContext())
         val viewModelFactory = ExercisesViewModelFactory(apiService)
@@ -40,11 +46,11 @@ class ExercisesFragment : Fragment() {
         binding.exercisesListView.adapter = adapter
 
         exercisesViewModel.exercises.observe(viewLifecycleOwner) { exercises ->
-            Log.i("exercises ", exercises.size.toString())
-            exercisesList = exercises.map { it.exerciseName }
-            // Update the adapter's dataset directly without re-initializing it
+            exercisesList = exercises
+            exercisesMap = exercises.associateBy { it.exerciseName }
+            val exerciseNames = exercises.map { it.exerciseName }
             adapter.clear()
-            adapter.addAll(exercisesList)
+            adapter.addAll(exerciseNames)
             adapter.notifyDataSetChanged()
         }
 
@@ -90,29 +96,33 @@ class ExercisesFragment : Fragment() {
     private fun performFiltering(query: String?) {
         query?.let {
             val filteredList = exercisesList.filter {
-                it.lowercase().contains(query.lowercase())
-            }
+                it.exerciseName.lowercase().contains(query.lowercase())
+            }.map { it.exerciseName }
+            exercisesMap = exercisesList.filter { it.exerciseName.lowercase().contains(query.lowercase()) }
+                .associateBy { it.exerciseName }
             adapter.clear()
             adapter.addAll(filteredList)
             adapter.notifyDataSetChanged()
         } ?: run {
-            // If query is null or empty, reset the list to the original dataset
+            exercisesMap = exercisesList.associateBy { it.exerciseName }
             adapter.clear()
-            adapter.addAll(exercisesList)
+            adapter.addAll(exercisesList.map { it.exerciseName })
             adapter.notifyDataSetChanged()
         }
     }
 
     private fun setupListViewItemClickListener() {
         binding.exercisesListView.setOnItemClickListener { _, _, position, _ ->
-            
-            // Get the selected exercise name
-            val selectedExercise = exercisesList[position]
-
-            // Use NavController to navigate
-            val action =
-                ExercisesFragmentDirections.actionNavExercisesToExerciseDetailsFragment(selectedExercise)
-            findNavController().navigate(action)
+            val selectedExerciseName = adapter.getItem(position)
+            selectedExerciseName?.let {
+                val selectedExercise = exercisesMap[it]
+                selectedExercise?.let { exercise ->
+                    val action = ExercisesFragmentDirections.actionNavExercisesToExerciseDetailsFragment(
+                        exercise.exerciseName, exercise.exerciseId.toString()
+                    )
+                    findNavController().navigate(action)
+                }
+            }
         }
     }
 

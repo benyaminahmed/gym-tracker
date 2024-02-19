@@ -21,6 +21,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gymtracker.R
@@ -87,7 +88,10 @@ class ExerciseDetailsFragment : Fragment() {
 
         // Get the title from arguments or set a default one
         val tvExerciseTitle = view.findViewById<TextView>(tvExerciseTitle)
-        exerciseName =  arguments?.getString("exerciseTitle") ?: "Exercise";
+        val args: ExerciseDetailsFragmentArgs by navArgs()
+
+        exerciseId = UUID.fromString(args.exerciseId )
+        exerciseName = args.exerciseName
         tvExerciseTitle.text = exerciseName
 
         setupUserAdapterAndRecyclerView(view)
