@@ -63,7 +63,7 @@
         android:id="@+id/etNumericInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="number"
+        android:inputType="numberDecimal"
         android:hint="Enter achievement"
         android:layout_marginTop="8dp"/>
 
