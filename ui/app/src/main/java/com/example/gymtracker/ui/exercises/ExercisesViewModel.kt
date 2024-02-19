@@ -52,7 +52,7 @@ class ExercisesViewModel(private val apiService: ApiService) : ViewModel() {
             override fun onResponse(call: Call<List<Exercise>>, response: Response<List<Exercise>>) {
                 _isLoading.postValue(false)
                 if (response.isSuccessful) {
-                    exercisesList = response.body() ?: listOf()
+                    exercisesList = response.body()?.sortedBy { it.exerciseName } ?: listOf()
                     _exercises.postValue(exercisesList)
                 } else {
                     Log.e("ExercisesViewModel", "Failed to fetch exercises: ${response.errorBody()?.string()}")

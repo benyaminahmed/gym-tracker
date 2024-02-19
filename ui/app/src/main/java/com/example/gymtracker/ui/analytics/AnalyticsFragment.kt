@@ -1,4 +1,4 @@
-package com.example.gymtracker.ui.slideshow
+package com.example.gymtracker.ui.analytics
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.gymtracker.databinding.FragmentSlideshowBinding
+import com.example.gymtracker.databinding.FragmentAnalyticsBinding
 
-class SlideshowFragment : Fragment() {
+class AnalyticsFragment : Fragment() {
 
-    private var _binding: FragmentSlideshowBinding? = null
+    private var _binding: FragmentAnalyticsBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -22,14 +22,14 @@ class SlideshowFragment : Fragment() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View {
-        val slideshowViewModel =
-                ViewModelProvider(this).get(SlideshowViewModel::class.java)
+        val analyticsViewModel =
+                ViewModelProvider(this).get(AnalyticsViewModel::class.java)
 
-        _binding = FragmentSlideshowBinding.inflate(inflater, container, false)
+        _binding = FragmentAnalyticsBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textSlideshow
-        slideshowViewModel.text.observe(viewLifecycleOwner) {
+        val textView: TextView = binding.textGallery
+        analyticsViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
         return root
