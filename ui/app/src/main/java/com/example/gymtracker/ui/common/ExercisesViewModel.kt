@@ -39,8 +39,11 @@ class ExercisesViewModel(private val apiService: ApiService) : ViewModel() {
     private val _trackedExercises = MutableLiveData<List<TrackedExercise>>()
 
     val trackedExercises: LiveData<List<TrackedExercise>> = _exerciseTracking.map { trackingList ->
-        trackingList?.map { TrackedExercise(it.exerciseId, it.exerciseName) }?.distinct() ?: emptyList()
-
+        trackingList
+            ?.map { TrackedExercise(it.exerciseId, it.exerciseName) }
+            ?.distinct()
+            ?.sortedBy { it.exerciseName }
+            ?: emptyList()
     }
     init {
         refreshData()
