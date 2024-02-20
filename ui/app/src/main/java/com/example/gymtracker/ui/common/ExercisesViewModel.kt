@@ -9,9 +9,11 @@ import retrofit2.Callback
 import retrofit2.Response
 import android.util.Log
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.example.gymtracker.network.dto.ExerciseTracking
 import com.example.gymtracker.network.dto.ExerciseTrackingRequest
+import com.example.gymtracker.network.dto.TrackedExercise
 import kotlinx.coroutines.launch
 
 class ExercisesViewModel(private val apiService: ApiService) : ViewModel() {
@@ -33,6 +35,13 @@ class ExercisesViewModel(private val apiService: ApiService) : ViewModel() {
     private val _postResult = MutableLiveData<Boolean>()
     val postResult: LiveData<Boolean> = _postResult
 
+    // A LiveData property that will hold the distinct list of tracked exercises
+    private val _trackedExercises = MutableLiveData<List<TrackedExercise>>()
+
+    val trackedExercises: LiveData<List<TrackedExercise>> = _exerciseTracking.map { trackingList ->
+        trackingList?.map { TrackedExercise(it.exerciseId, it.exerciseName) }?.distinct() ?: emptyList()
+
+    }
     init {
         refreshData()
     }
@@ -97,6 +106,7 @@ class ExercisesViewModel(private val apiService: ApiService) : ViewModel() {
             }
         })
     }
+
     fun postExerciseTracking(exerciseTrackingRequest: ExerciseTrackingRequest) {
         viewModelScope.launch {
             try {
