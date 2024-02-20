@@ -24,6 +24,9 @@ import com.example.gymtracker.R
 import com.example.gymtracker.network.RetrofitService
 import com.example.gymtracker.network.dto.ExerciseTracking
 import com.example.gymtracker.ui.exercises.ExerciseDetailsFragmentArgs
+import java.math.BigDecimal
+import java.math.RoundingMode
+import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.util.UUID
 
@@ -71,18 +74,30 @@ class AnalyticsDetailsFragment : Fragment() {
         cartesian.tooltip().positionMode(TooltipPositionMode.POINT)
         cartesian.title("Performance Over Time")
 
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        // Step 1: Identify all unique time periods (YearMonth), sorted
+        val allDates = exerciseTrackingList.map { YearMonth.from(it.createdDate) }.toSortedSet()
 
-        // Group tracking data by user
+        // Step 2: Group tracking data by user
         val trackingByUser = exerciseTrackingList.groupBy { it.firstName }
 
-        // For each group, create a series
-        for ((firstName, trackingList) in trackingByUser) {
-            val seriesData: MutableList<DataEntry> = ArrayList()
+        trackingByUser.forEach { (firstName, trackingList) ->
+            val monthlyAverages = calculateMonthlyAverages(trackingList)
 
-            for (tracking in trackingList) {
-                val formattedDate = tracking.createdDate.format(formatter)
-                seriesData.add(ValueDataEntry(formattedDate, tracking.performanceMetric))
+            // Prepare series data, ensuring each time period is covered
+            val sortedDates = allDates.toList()
+            val seriesData: MutableList<DataEntry> = mutableListOf()
+            var lastKnownAverage: Double? = null
+
+            for (date in sortedDates) {
+                val average = monthlyAverages[date]
+                if (average != null) {
+                    lastKnownAverage = average
+                    seriesData.add(ValueDataEntry(date.toString(), average))
+                } else if (lastKnownAverage != null) {
+                    // Use the last known average if the current date doesn't have data
+                    seriesData.add(ValueDataEntry(date.toString(), lastKnownAverage))
+                }
+                // If there's no data at all yet, don't add an entry (or consider how you want to handle this case)
             }
 
             val set = Set.instantiate()
@@ -90,12 +105,9 @@ class AnalyticsDetailsFragment : Fragment() {
             val seriesMapping = set.mapAs("{ x: 'x', value: 'value' }")
 
             val series = cartesian.line(seriesMapping)
-            series.name(firstName)
+            series.name(firstName) // Customize as needed
             series.hovered().markers().enabled(true)
-            series.hovered().markers()
-                .type(MarkerType.CIRCLE)
-                .size(4.0)
-                .stroke("1.5 #000")
+            series.hovered().markers().type(MarkerType.CIRCLE).size(4.0).stroke("1.5 #000")
         }
 
         cartesian.legend().enabled(true)
@@ -105,5 +117,18 @@ class AnalyticsDetailsFragment : Fragment() {
         anyChartView.setChart(cartesian)
     }
 
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun calculateMonthlyAverages(exerciseTrackingList: List<ExerciseTracking>): Map<YearMonth, Double> {
+        val groupedByYearMonth = exerciseTrackingList.groupBy {
+            YearMonth.from(it.createdDate)
+        }
+
+        return groupedByYearMonth.mapValues { (_, values) ->
+            BigDecimal(values.map { it.performanceMetric }.average())
+                .setScale(2, RoundingMode.HALF_UP)
+                .toDouble()
+        }
+    }
 
 }
