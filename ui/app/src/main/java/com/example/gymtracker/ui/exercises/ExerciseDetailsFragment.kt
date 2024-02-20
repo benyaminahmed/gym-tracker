@@ -19,13 +19,13 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gymtracker.R
-import com.example.gymtracker.R.id.tvExerciseTitle
 import com.example.gymtracker.network.dto.ExerciseTrackingRequest
 import com.example.gymtracker.network.RetrofitService
 import java.time.LocalDate
@@ -46,6 +46,8 @@ class ExerciseDetailsFragment : Fragment() {
     private lateinit var etNumericInput: EditText
     private lateinit var btnSubmit: Button
     private var isFirstLoad = true
+
+    private val args: ExerciseDetailsFragmentArgs by navArgs()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -87,13 +89,11 @@ class ExerciseDetailsFragment : Fragment() {
             datePickerDialog.show()
         }
 
-        // Get the title from arguments or set a default one
-        val tvExerciseTitle = view.findViewById<TextView>(tvExerciseTitle)
-        val args: ExerciseDetailsFragmentArgs by navArgs()
+        // Get the title / id from arguments
+        exerciseName = args.exerciseName
+        (activity as? AppCompatActivity)?.supportActionBar?.title = exerciseName
 
         exerciseId = UUID.fromString(args.exerciseId )
-        exerciseName = args.exerciseName
-        tvExerciseTitle.text = exerciseName
 
         setupUserAdapterAndRecyclerView(view)
 
