@@ -84,9 +84,11 @@ class AnalyticsDetailsFragment : Fragment() {
         cartesian.padding(10.0, 20.0, 5.0, 20.0)
         cartesian.crosshair().enabled(true)
         cartesian.tooltip().positionMode(TooltipPositionMode.POINT)
+        cartesian.background().fill("#121212")  // Dark background
+        cartesian.background().stroke("#2A2A2A")
+
         val unit = exerciseTrackingList.first().unit
         cartesian.title("Average Monthly Performance ($unit)")
-
 
         // Step 1: Identify all unique time periods (YearMonth), sorted
         val allDates = exerciseTrackingList.map { YearMonth.from(it.createdDate) }.toSortedSet()
@@ -111,15 +113,16 @@ class AnalyticsDetailsFragment : Fragment() {
                     // Use the last known average if the current date doesn't have data
                     seriesData.add(ValueDataEntry(date.toString(), lastKnownAverage))
                 }
-                // If there's no data at all yet, don't add an entry (or consider how you want to handle this case)
-            }
+               }
 
             val set = Set.instantiate()
             set.data(seriesData)
             val seriesMapping = set.mapAs("{ x: 'x', value: 'value' }")
 
             val series = cartesian.line(seriesMapping)
-            series.name(firstName) // Customize as needed
+            series.name(firstName)
+            series.tooltip()
+                .format("$firstName: {%Value} $unit")
             series.hovered().markers().enabled(true)
             series.hovered().markers().type(MarkerType.CIRCLE).size(4.0).stroke("1.5 #000")
         }
