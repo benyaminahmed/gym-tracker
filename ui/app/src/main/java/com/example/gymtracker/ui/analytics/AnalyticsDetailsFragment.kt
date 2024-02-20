@@ -84,13 +84,15 @@ class AnalyticsDetailsFragment : Fragment() {
         cartesian.padding(10.0, 20.0, 5.0, 20.0)
         cartesian.crosshair().enabled(true)
         cartesian.tooltip().positionMode(TooltipPositionMode.POINT)
-        cartesian.title("Performance Over Time")
+        val unit = exerciseTrackingList.first().unit
+        cartesian.title("Average Monthly Performance ($unit)")
+
 
         // Step 1: Identify all unique time periods (YearMonth), sorted
         val allDates = exerciseTrackingList.map { YearMonth.from(it.createdDate) }.toSortedSet()
 
         // Step 2: Group tracking data by user
-        val trackingByUser = exerciseTrackingList.groupBy { it.firstName }
+        val trackingByUser = exerciseTrackingList.groupBy { it.firstName  }
 
         trackingByUser.forEach { (firstName, trackingList) ->
             val monthlyAverages = calculateMonthlyAverages(trackingList)
