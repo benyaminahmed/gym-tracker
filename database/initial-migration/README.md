@@ -1,6 +1,6 @@
 # Bench Press Tracking
 
-I have pasted a comma-separated list containing values for bench press achievements over the past year. The list tracks the progress of three people, formatted as "Benyamin,Yusuf,Imran,Benyamin,Yusuf,Imran," etc. For some entries, there are no values, and these are represented with blank entries (,,) indicating no input should be made for these individuals.
+I have pasted a comma-separated list containing values for bench press achievements over the past year. The list tracks the progress of three people, formatted as "Benyamin,Yusuf,Imran,Benyamin,Yusuf,Imran," etc. For some entries, there are no values, and these are represented with blank entries (,,) indicating no input should be made for these individuals. Make sure you keep rotating through "Benyamin,Yusuf,Imran,Benyamin,Yusuf,Imran," and even when there is a blank entry (,,), you count this for whichever user you was on and then go to the next user in the rotation. Please give me ALL the sql statements in a downloadable file.
 
 ## Data Format
 
