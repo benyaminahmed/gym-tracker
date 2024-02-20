@@ -1,10 +1,26 @@
+package com.example.gymtracker.ui.analytics
+
+import ExercisesViewModel
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.anychart.AnyChart
+import com.anychart.AnyChartView
+import com.anychart.chart.common.dataentry.DataEntry
+import com.anychart.chart.common.dataentry.ValueDataEntry
+import com.anychart.charts.Cartesian
+import com.anychart.enums.TooltipPositionMode
+import com.example.gymtracker.R
+import com.example.gymtracker.network.dto.ExerciseTracking
+import java.text.SimpleDateFormat
+import java.util.UUID
 
 class AnalyticsDetailsFragment : Fragment() {
+
+
+    private lateinit var exercisesViewModel: ExercisesViewModel
 
     private lateinit var anyChartView: AnyChartView
     private lateinit var exerciseId: String
@@ -14,18 +30,23 @@ class AnalyticsDetailsFragment : Fragment() {
 
         // Initialize your AnyChartView from layout
         anyChartView = view.findViewById(R.id.any_chart_view)
-        anyChartView.setProgressBar(view.findViewById(R.id.progress_bar))
 
         // Get exerciseId from arguments
         exerciseId = requireArguments().getString("exerciseId", "")
 
         // Now fetch the data for multiple users based on exerciseId and update the chart
-        updateChartForExerciseId(exerciseId)
+        // Observe the exerciseTracking LiveData or any other relevant data
+        exercisesViewModel.exerciseTracking.observe(viewLifecycleOwner) { exerciseTrackingList ->
+            // Assuming exerciseTrackingList is the data you need
+            // Filter or process your list based on exerciseId if needed
+            val filteredList = exerciseTrackingList.filter { it.exerciseId == UUID.fromString(exerciseId) }
+            updateChart(filteredList)
+        }
 
         return view
     }
 
-    private fun updateChartForExerciseId(exerciseId: String) {
+    private fun updateChart(exerciseTrackingList: List<ExerciseTracking>) {
         val cartesian: Cartesian = AnyChart.line()
         cartesian.animation(true)
         cartesian.padding(10.0, 20.0, 5.0, 20.0)
@@ -33,15 +54,14 @@ class AnalyticsDetailsFragment : Fragment() {
         cartesian.tooltip().positionMode(TooltipPositionMode.POINT)
         cartesian.title("Exercise Performance Over Time")
 
-        val usersData = fetchDataForExerciseId(exerciseId)
-
-        for (userData in usersData) {
+        for (tracking in exerciseTrackingList) {
             val seriesData = ArrayList<DataEntry>()
-            for (dataPoint in userData.dataPoints) {
-                seriesData.add(ValueDataEntry(dataPoint.first, dataPoint.second))
-            }
-            val series: Line = cartesian.line(seriesData)
-            series.name(userData.userId)
+
+            val formattedDate = SimpleDateFormat("yyyy-MM-dd").format(tracking.createdDate) // Format the date
+            seriesData.add(ValueDataEntry(formattedDate, tracking.performanceMetric))
+
+            val series  = cartesian.line(seriesData)
+            series.name(tracking.firstName)
             series.hovered().markers().enabled(true)
             series.hovered().markers()
                 .type("circle")
@@ -51,14 +71,4 @@ class AnalyticsDetailsFragment : Fragment() {
 
         anyChartView.setChart(cartesian)
     }
-
-    private fun fetchDataForExerciseId(exerciseId: String): List<UserExerciseData> {
-        // Example data structure for user's exercise data
-        // Replace this with actual data fetching logic
-        return listOf(
-            UserExerciseData("User1", listOf(Pair(1, 100), Pair(2, 200))),
-            UserExerciseData("User2", listOf(Pair(1, 150), Pair(2, 250)))
-        )
-    }
-
 }

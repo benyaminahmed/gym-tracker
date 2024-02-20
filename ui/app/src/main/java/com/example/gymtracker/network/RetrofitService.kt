@@ -50,6 +50,8 @@ object RetrofitService {
                 // Build the new request
                 val newRequest = newRequestBuilder.build()
 
+                newRequestBuilder.header("Content-Type", "application/json")
+
                 // Proceed with the new request
                 chain.proceed(newRequest)
             }
