@@ -1,6 +1,5 @@
 package com.example.gymtracker.network.dto
 
-import java.time.LocalDate
 import java.util.UUID
 
 data class ExerciseTrackingRequest(
