@@ -1,4 +1,4 @@
-package com.example.gymtracker.network
+package com.example.gymtracker.network.dto
 
 import java.util.UUID
 

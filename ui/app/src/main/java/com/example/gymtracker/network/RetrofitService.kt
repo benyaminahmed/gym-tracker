@@ -1,9 +1,7 @@
 package com.example.gymtracker.network
 
-import LocalDateTimeAdapter
+import com.example.gymtracker.utils.LocalDateTimeAdapter
 import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkInfo
 import android.os.Build
 import androidx.annotation.RequiresApi
 import okhttp3.OkHttpClient

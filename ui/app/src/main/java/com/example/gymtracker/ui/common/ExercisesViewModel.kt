@@ -2,20 +2,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.LiveData
 import com.example.gymtracker.network.ApiService
-import com.example.gymtracker.network.Exercise
-import com.example.gymtracker.network.User
+import com.example.gymtracker.network.dto.Exercise
+import com.example.gymtracker.network.dto.User
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import android.util.Log
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.gymtracker.network.ExerciseTracking
-import com.example.gymtracker.network.ExerciseTrackingRequest
+import com.example.gymtracker.network.dto.ExerciseTracking
+import com.example.gymtracker.network.dto.ExerciseTrackingRequest
 import kotlinx.coroutines.launch
-import retrofit2.HttpException
-import java.io.IOException
-import java.util.UUID
 
 class ExercisesViewModel(private val apiService: ApiService) : ViewModel() {
 

@@ -1,3 +1,5 @@
+package com.example.gymtracker.utils
+
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.google.gson.TypeAdapter

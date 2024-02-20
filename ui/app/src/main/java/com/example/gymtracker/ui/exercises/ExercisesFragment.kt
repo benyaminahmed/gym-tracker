@@ -4,7 +4,6 @@ import ExercisesViewModel
 import ExercisesViewModelFactory
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +18,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.gymtracker.databinding.FragmentExercisesBinding
-import com.example.gymtracker.network.Exercise
+import com.example.gymtracker.network.dto.Exercise
 import com.example.gymtracker.network.RetrofitService
 
 class ExercisesFragment : Fragment() {

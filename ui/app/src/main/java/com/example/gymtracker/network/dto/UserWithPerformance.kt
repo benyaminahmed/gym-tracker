@@ -1,5 +1,4 @@
-import com.example.gymtracker.network.ExerciseTracking
-import com.example.gymtracker.network.User
+package com.example.gymtracker.network.dto
 
 data class UserWithPerformance(
     val user: User,

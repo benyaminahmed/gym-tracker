@@ -1,4 +1,4 @@
-package com.example.gymtracker.network
+package com.example.gymtracker.network.dto
 
 import java.time.LocalDateTime
 import java.util.UUID

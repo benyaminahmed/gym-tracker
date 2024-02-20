@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gymtracker.R
-import com.example.gymtracker.network.User
+import com.example.gymtracker.network.dto.UserWithPerformance
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.UUID

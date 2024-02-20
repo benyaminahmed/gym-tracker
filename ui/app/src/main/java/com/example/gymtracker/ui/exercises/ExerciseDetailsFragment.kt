@@ -3,7 +3,7 @@ package com.example.gymtracker.ui.exercises
 import ExercisesViewModel
 import ExercisesViewModelFactory
 import UserAdapter
-import UserWithPerformance
+import com.example.gymtracker.network.dto.UserWithPerformance
 import android.app.DatePickerDialog
 import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
@@ -26,9 +26,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gymtracker.R
 import com.example.gymtracker.R.id.tvExerciseTitle
-import com.example.gymtracker.network.ExerciseTrackingRequest
+import com.example.gymtracker.network.dto.ExerciseTrackingRequest
 import com.example.gymtracker.network.RetrofitService
-import com.google.android.material.textview.MaterialTextView
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
