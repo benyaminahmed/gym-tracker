@@ -36,8 +36,6 @@ class ExercisesViewModel(private val apiService: ApiService) : ViewModel() {
     val postResult: LiveData<Boolean> = _postResult
 
     // A LiveData property that will hold the distinct list of tracked exercises
-    private val _trackedExercises = MutableLiveData<List<TrackedExercise>>()
-
     val trackedExercises: LiveData<List<TrackedExercise>> = _exerciseTracking.map { trackingList ->
         trackingList
             ?.map { TrackedExercise(it.exerciseId, it.exerciseName) }

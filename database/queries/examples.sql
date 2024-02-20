@@ -12,11 +12,12 @@ SELECT * FROM public.user;
 
 SELECT * FROM public.exercise_tracking;
 
-INSERT INTO public.exercise_tracking (exercise_id, user_id, performance_metric)
+INSERT INTO public.exercise_tracking (exercise_id, user_id, performance_metric, created_date)
 SELECT 
 	e.exercise_id,
 	u.user_id,
-	10
+	10,
+	'2021-01-01'
 FROM
 	public.exercise e, public.user u
 WHERE
