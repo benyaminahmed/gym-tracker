@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -27,7 +28,6 @@ import com.example.gymtracker.ui.exercises.ExerciseDetailsFragmentArgs
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.YearMonth
-import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 class AnalyticsDetailsFragment : Fragment() {
@@ -37,12 +37,16 @@ class AnalyticsDetailsFragment : Fragment() {
 
     private lateinit var anyChartView: AnyChartView
     private lateinit var exerciseId: String
+    private lateinit var progressBar: ProgressBar
 
     private val args: ExerciseDetailsFragmentArgs by navArgs()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_analytics_details, container, false)
+
+        // Initialize ProgressBar from layout
+        progressBar = view.findViewById(R.id.pbLoadingAnalyticsDetails)
 
         val apiService = RetrofitService.create(requireContext())
         val viewModelFactory = ExercisesViewModelFactory(apiService)
@@ -51,14 +55,22 @@ class AnalyticsDetailsFragment : Fragment() {
         // Initialize AnyChartView from layout
         anyChartView = view.findViewById(R.id.any_chart_view)
 
+        // Initially hide the AnyChartView while data is being fetched
+        anyChartView.visibility = View.INVISIBLE
+
         // Get exerciseId from arguments
         exerciseId = requireArguments().getString("exerciseId", "")
+
+        // Show the ProgressBar when starting to fetch data
+        progressBar.visibility = View.VISIBLE
 
         // Now fetch the data for multiple users based on exerciseId and update the chart
         // Observe the exerciseTracking LiveData or any other relevant data
         exercisesViewModel.exerciseTracking.observe(viewLifecycleOwner) { exerciseTrackingList ->
             val filteredList = exerciseTrackingList.filter { it.exerciseId == UUID.fromString(exerciseId) }
             updateChart(filteredList)
+            progressBar.visibility = View.GONE
+            anyChartView.visibility = View.VISIBLE
         }
 
         (activity as? AppCompatActivity)?.supportActionBar?.title = args.exerciseName
@@ -116,7 +128,6 @@ class AnalyticsDetailsFragment : Fragment() {
 
         anyChartView.setChart(cartesian)
     }
-
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun calculateMonthlyAverages(exerciseTrackingList: List<ExerciseTracking>): Map<YearMonth, Double> {
