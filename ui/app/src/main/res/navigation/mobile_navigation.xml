@@ -58,5 +58,4 @@
             android:name="exerciseId"
             app:argType="string" />
     </fragment>
-
 </navigation>
