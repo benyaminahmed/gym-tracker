@@ -35,6 +35,9 @@ class ExercisesViewModel(private val apiService: ApiService) : ViewModel() {
     private val _postResult = MutableLiveData<Boolean>()
     val postResult: LiveData<Boolean> = _postResult
 
+    private val _errorMessages = MutableLiveData<String>()
+    val errorMessages: LiveData<String> = _errorMessages
+
     // A LiveData property that will hold the distinct list of tracked exercises
     val trackedExercises: LiveData<List<TrackedExercise>> = _exerciseTracking.map { trackingList ->
         trackingList
@@ -59,16 +62,16 @@ class ExercisesViewModel(private val apiService: ApiService) : ViewModel() {
             override fun onResponse(call: Call<List<Exercise>>, response: Response<List<Exercise>>) {
                 _isLoading.postValue(false)
                 if (response.isSuccessful) {
-                    exercisesList = response.body()?.sortedBy { it.exerciseName } ?: listOf()
-                    _exercises.postValue(exercisesList)
+                    _exercises.postValue(response.body())
                 } else {
                     Log.e("ExercisesViewModel", "Failed to fetch exercises: ${response.errorBody()?.string()}")
+                    _errorMessages.postValue("Failed to fetch exercises")
                 }
             }
 
             override fun onFailure(call: Call<List<Exercise>>, t: Throwable) {
                 _isLoading.postValue(false)
-                Log.e("ExercisesViewModel", "Error fetching exercises", t)
+                _errorMessages.postValue("Error fetching exercises: ${t.message}")
             }
         })
     }
@@ -82,12 +85,14 @@ class ExercisesViewModel(private val apiService: ApiService) : ViewModel() {
                     _users.postValue(response.body())
                 } else {
                     Log.e("ExercisesViewModel", "Failed to fetch users: ${response.errorBody()?.string()}")
+                    _errorMessages.postValue("Failed to fetch users")
                 }
             }
 
             override fun onFailure(call: Call<List<User>>, t: Throwable) {
                 _isLoading.postValue(false)
                 Log.e("ExercisesViewModel", "Error fetching users", t)
+                _errorMessages.postValue("Error fetching users: ${t.message}")
             }
         })
     }
@@ -99,11 +104,13 @@ class ExercisesViewModel(private val apiService: ApiService) : ViewModel() {
                     _exerciseTracking.postValue(response.body())
                 } else {
                     Log.e("ExercisesViewModel", "Failed to fetch exercise tracking: ${response.errorBody()?.string()}")
+                    _errorMessages.postValue("Failed to fetch exercise tracking")
                 }
             }
 
             override fun onFailure(call: Call<List<ExerciseTracking>>, t: Throwable) {
                 Log.e("ExercisesViewModel", "Error fetching users", t)
+                _errorMessages.postValue("Failed to fetch exercise tracking")
             }
         })
     }
@@ -115,10 +122,12 @@ class ExercisesViewModel(private val apiService: ApiService) : ViewModel() {
                 if (response.isSuccessful) {
                     _postResult.postValue(true)
                 } else {
-                    _postResult.postValue(false)
+                    _errorMessages.postValue("Failed to post exercise tracking")
                 }
             } catch (e: Exception) {
-                _postResult.postValue(false)
+                _errorMessages.postValue("Error posting exercise tracking: ${e.message}")
+            } finally {
+                _isLoading.postValue(false)
             }
         }
     }

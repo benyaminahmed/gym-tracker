@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -22,9 +23,13 @@ import com.anychart.enums.MarkerType
 import com.anychart.enums.TooltipPositionMode
 import com.anychart.data.Set
 import com.example.gymtracker.R
+import com.example.gymtracker.databinding.FragmentAnalyticsDetailsBinding
+import com.example.gymtracker.databinding.FragmentExercisesBinding
 import com.example.gymtracker.network.RetrofitService
 import com.example.gymtracker.network.dto.ExerciseTracking
 import com.example.gymtracker.ui.exercises.ExerciseDetailsFragmentArgs
+import com.example.gymtracker.utils.ErrorReporting
+import com.google.android.material.snackbar.Snackbar
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.YearMonth
@@ -32,6 +37,10 @@ import java.util.UUID
 
 class AnalyticsDetailsFragment : Fragment() {
 
+
+    private var _binding: FragmentAnalyticsDetailsBinding? = null
+
+    private val binding get() = _binding!!
 
     private lateinit var exercisesViewModel: ExercisesViewModel
 
@@ -71,6 +80,10 @@ class AnalyticsDetailsFragment : Fragment() {
             updateChart(filteredList)
             progressBar.visibility = View.GONE
             anyChartView.visibility = View.VISIBLE
+        }
+
+        exercisesViewModel.errorMessages.observe(viewLifecycleOwner) { errorMessage ->
+            ErrorReporting.showError(errorMessage, binding.root)
         }
 
         (activity as? AppCompatActivity)?.supportActionBar?.title = args.exerciseName
@@ -146,5 +159,4 @@ class AnalyticsDetailsFragment : Fragment() {
                 .toDouble()
         }
     }
-
 }

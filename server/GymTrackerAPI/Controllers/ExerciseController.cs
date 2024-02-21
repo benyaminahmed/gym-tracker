@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using GymTrackerAPI.DataTypes;
 using GymTrackerAPI.Data;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
 namespace GymTrackerAPI.Controllers
