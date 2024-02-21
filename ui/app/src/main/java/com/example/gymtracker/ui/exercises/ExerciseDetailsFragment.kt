@@ -132,7 +132,6 @@ class ExerciseDetailsFragment : Fragment() {
         setUpSubmit(view)
     }
 
-
     private fun setupUserAdapterAndRecyclerView(view: View) {
         // Assuming rvUsers is your RecyclerView
         val rvUsers = view.findViewById<RecyclerView>(R.id.rvUsers)
