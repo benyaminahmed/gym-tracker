@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.R.id.search_mag_icon
 import androidx.fragment.app.Fragment
@@ -20,6 +21,8 @@ import androidx.navigation.fragment.findNavController
 import com.example.gymtracker.databinding.FragmentExercisesBinding
 import com.example.gymtracker.network.dto.Exercise
 import com.example.gymtracker.network.RetrofitService
+import com.example.gymtracker.utils.ErrorReporting
+import com.google.android.material.snackbar.Snackbar
 
 class ExercisesFragment : Fragment() {
 
@@ -55,6 +58,10 @@ class ExercisesFragment : Fragment() {
         exercisesViewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
             binding.progressBarFetchExercises.visibility = if (isLoading) View.VISIBLE else View.GONE
         })
+
+        exercisesViewModel.errorMessages.observe(viewLifecycleOwner) { errorMessage ->
+            ErrorReporting.showError(errorMessage, binding.root)
+        }
 
         setupSearchView()
         setupListViewItemClickListener()

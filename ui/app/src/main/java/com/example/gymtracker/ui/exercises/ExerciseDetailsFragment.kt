@@ -26,8 +26,12 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gymtracker.R
+import com.example.gymtracker.databinding.FragmentExerciseDetailsBinding
+import com.example.gymtracker.databinding.FragmentExercisesBinding
 import com.example.gymtracker.network.dto.ExerciseTrackingRequest
 import com.example.gymtracker.network.RetrofitService
+import com.example.gymtracker.utils.ErrorReporting
+import com.google.android.material.snackbar.Snackbar
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -36,6 +40,10 @@ import java.util.Locale
 import java.util.UUID
 
 class ExerciseDetailsFragment : Fragment() {
+
+
+    private var _binding: FragmentExerciseDetailsBinding? = null
+    private val binding get() = _binding!!
 
     private lateinit var userAdapter: UserAdapter
     private var exerciseId: UUID? = null
@@ -51,6 +59,9 @@ class ExerciseDetailsFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+
+        _binding = FragmentExerciseDetailsBinding.inflate(inflater, container, false)
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_exercise_details, container, false)
     }
@@ -62,6 +73,7 @@ class ExerciseDetailsFragment : Fragment() {
         val apiService = RetrofitService.create(requireContext())
         val viewModelFactory = ExercisesViewModelFactory(apiService)
         exercisesViewModel = ViewModelProvider(this, viewModelFactory).get(ExercisesViewModel::class.java)
+
 
         // Set date to default to current
         val tvDateTitle: TextView = view.findViewById(R.id.tvDateTitle)
@@ -102,9 +114,14 @@ class ExerciseDetailsFragment : Fragment() {
         etNumericInput = view.findViewById<EditText>(R.id.etNumericInput)
         btnSubmit = view.findViewById<Button>(R.id.btnSubmit)
 
+        exercisesViewModel.errorMessages.observe(viewLifecycleOwner) { errorMessage ->
+            ErrorReporting.showError(errorMessage, binding.root)
+        }
+
         refreshUserExerciseData()
         setUpSubmit(view)
     }
+
 
     private fun setupUserAdapterAndRecyclerView(view: View) {
         // Assuming rvUsers is your RecyclerView

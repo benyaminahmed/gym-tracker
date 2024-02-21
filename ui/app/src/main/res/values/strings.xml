@@ -1,12 +1,13 @@
 <resources>
-    <string name="app_name">GymTracker</string>
+    <string name="app_name">Gym Tracker</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Gym Tracker</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_subtitle">Benyamin Ahmed</string>
     <string name="nav_header_desc">Navigation header</string>
 
     <string name="menu_exercises">Exercises</string>
     <string name="menu_analytics">Analytics</string>
     <string name="select_date">Select Date</string>
+    <string name="version_number">Version 1.0.0</string>
 </resources>

@@ -19,6 +19,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.gymtracker.databinding.FragmentAnalyticsBinding
 import com.example.gymtracker.network.RetrofitService
+import com.example.gymtracker.utils.ErrorReporting
+import com.google.android.material.snackbar.Snackbar
 
 class AnalyticsFragment : Fragment() {
 
@@ -55,11 +57,16 @@ class AnalyticsFragment : Fragment() {
             binding.progressBarFetchExercises.visibility = if (isLoading) View.VISIBLE else View.GONE
         })
 
+        exercisesViewModel.errorMessages.observe(viewLifecycleOwner) { errorMessage ->
+            ErrorReporting.showError(errorMessage, binding.root)
+        }
+
         setupSearchView()
         setupListViewItemClickListener()
 
         return root
     }
+
 
     private fun setupSearchView() {
         binding.searchExercise.apply {
