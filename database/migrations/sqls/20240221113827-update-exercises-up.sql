@@ -1,0 +1,1 @@
+INSERT INTO public.exercise (exercise, unit) VALUES ('Farmers Lift', 'kg');
