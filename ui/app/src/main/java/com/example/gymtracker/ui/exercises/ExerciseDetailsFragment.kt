@@ -22,6 +22,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -53,6 +54,7 @@ class ExerciseDetailsFragment : Fragment() {
     private lateinit var pbLoadingUsers: ProgressBar
     private lateinit var etNumericInput: EditText
     private lateinit var btnSubmit: Button
+    private lateinit var btnAnalytics: TextView
     private var isFirstLoad = true
 
     private val args: ExerciseDetailsFragmentArgs by navArgs()
@@ -118,6 +120,14 @@ class ExerciseDetailsFragment : Fragment() {
             ErrorReporting.showError(errorMessage, binding.root)
         }
 
+        // Set-up analytics button
+        btnAnalytics = view.findViewById<TextView>(R.id.btnAnalytics)
+
+        btnAnalytics.setOnClickListener {
+            val action = ExerciseDetailsFragmentDirections
+                .actionExerciseDetailsFragmentToAnalyticsDetailsFragment(exerciseName, exerciseId.toString())
+            findNavController().navigate(action)
+        }
         refreshUserExerciseData()
         setUpSubmit(view)
     }
@@ -192,6 +202,8 @@ class ExerciseDetailsFragment : Fragment() {
 
         // Format the LocalDateTime object to the required string format
         val outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+
+
         return dateTime.format(outputFormatter)
     }
 
@@ -209,6 +221,7 @@ class ExerciseDetailsFragment : Fragment() {
             pbLoadingUsers.visibility = View.VISIBLE
             etNumericInput.visibility = View.GONE
             btnSubmit.visibility = View.GONE
+            btnAnalytics.visibility = View.GONE
         }
         exercisesViewModel.refreshData()
         exercisesViewModel.exercises.observe(viewLifecycleOwner) { exercises ->
@@ -218,6 +231,7 @@ class ExerciseDetailsFragment : Fragment() {
                         pbLoadingUsers.visibility = View.GONE
                         etNumericInput.visibility = View.VISIBLE
                         btnSubmit.visibility = View.VISIBLE
+                        btnAnalytics.visibility = View.VISIBLE
                         isFirstLoad = false // Ensure this logic runs only once
                     }
                     exerciseId = exercises.firstOrNull { it.exerciseName == exerciseName }?.exerciseId
