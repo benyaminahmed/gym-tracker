@@ -33,6 +33,7 @@ import com.google.android.material.snackbar.Snackbar
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.YearMonth
+import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 class AnalyticsDetailsFragment : Fragment() {
@@ -103,11 +104,11 @@ class AnalyticsDetailsFragment : Fragment() {
         val unit = exerciseTrackingList.first().unit
         cartesian.title("Average Monthly Performance ($unit)")
 
-        // Step 1: Identify all unique time periods (YearMonth), sorted
+        // Identify all unique time periods (YearMonth), sorted
         val allDates = exerciseTrackingList.map { YearMonth.from(it.createdDate) }.toSortedSet()
 
-        // Step 2: Group tracking data by user
-        val trackingByUser = exerciseTrackingList.groupBy { it.firstName  }
+        // Group tracking data by user
+        val trackingByUser = exerciseTrackingList.groupBy { it.firstName }
 
         trackingByUser.forEach { (firstName, trackingList) ->
             val monthlyAverages = calculateMonthlyAverages(trackingList)
@@ -121,12 +122,15 @@ class AnalyticsDetailsFragment : Fragment() {
                 val average = monthlyAverages[date]
                 if (average != null) {
                     lastKnownAverage = average
-                    seriesData.add(ValueDataEntry(date.toString(), average))
+                    // Format the date as MM/YY
+                    val formattedDate = date.format(DateTimeFormatter.ofPattern("MM/yy"))
+                    seriesData.add(ValueDataEntry(formattedDate, average))
                 } else if (lastKnownAverage != null) {
                     // Use the last known average if the current date doesn't have data
-                    seriesData.add(ValueDataEntry(date.toString(), lastKnownAverage))
+                    val formattedDate = date.format(DateTimeFormatter.ofPattern("MM/yy"))
+                    seriesData.add(ValueDataEntry(formattedDate, lastKnownAverage))
                 }
-               }
+            }
 
             val set = Set.instantiate()
             set.data(seriesData)
