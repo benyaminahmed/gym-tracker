@@ -1,0 +1,1 @@
+DELETE FROM public.exercise WHERE exericse = 'Dumbbell Plank';
