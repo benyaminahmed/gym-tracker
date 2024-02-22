@@ -62,7 +62,8 @@ class ExercisesViewModel(private val apiService: ApiService) : ViewModel() {
             override fun onResponse(call: Call<List<Exercise>>, response: Response<List<Exercise>>) {
                 _isLoading.postValue(false)
                 if (response.isSuccessful) {
-                    _exercises.postValue(response.body())
+                    val sortedExercises = response.body()?.sortedBy { it.exerciseName } ?: emptyList()
+                    _exercises.postValue(sortedExercises)
                 } else {
                     Log.e("ExercisesViewModel", "Failed to fetch exercises: ${response.errorBody()?.string()}")
                     _errorMessages.postValue("Failed to fetch exercises")
@@ -82,7 +83,8 @@ class ExercisesViewModel(private val apiService: ApiService) : ViewModel() {
             override fun onResponse(call: Call<List<User>>, response: Response<List<User>>) {
                 _isLoading.postValue(false)
                 if (response.isSuccessful) {
-                    _users.postValue(response.body())
+                    val sortedUsers = response.body()?.sortedBy { it.firstName } ?: emptyList()
+                    _users.postValue(sortedUsers)
                 } else {
                     Log.e("ExercisesViewModel", "Failed to fetch users: ${response.errorBody()?.string()}")
                     _errorMessages.postValue("Failed to fetch users")
@@ -101,7 +103,8 @@ class ExercisesViewModel(private val apiService: ApiService) : ViewModel() {
         apiService.getExerciseTracking().enqueue(object : Callback<List<ExerciseTracking>> {
             override fun onResponse(call: Call<List<ExerciseTracking>>, response: Response<List<ExerciseTracking>>) {
                 if (response.isSuccessful) {
-                    _exerciseTracking.postValue(response.body())
+                    val sortedExercises = response.body()?.sortedBy { it.exerciseName } ?: emptyList()
+                    _exerciseTracking.postValue(sortedExercises)
                 } else {
                     Log.e("ExercisesViewModel", "Failed to fetch exercise tracking: ${response.errorBody()?.string()}")
                     _errorMessages.postValue("Failed to fetch exercise tracking")

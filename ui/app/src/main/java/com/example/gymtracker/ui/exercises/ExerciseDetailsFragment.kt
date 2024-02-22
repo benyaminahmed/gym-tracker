@@ -26,6 +26,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.Visibility
 import com.example.gymtracker.R
 import com.example.gymtracker.databinding.FragmentExerciseDetailsBinding
 import com.example.gymtracker.databinding.FragmentExercisesBinding
@@ -75,7 +76,6 @@ class ExerciseDetailsFragment : Fragment() {
         val apiService = RetrofitService.create(requireContext())
         val viewModelFactory = ExercisesViewModelFactory(apiService)
         exercisesViewModel = ViewModelProvider(this, viewModelFactory).get(ExercisesViewModel::class.java)
-
 
         // Set date to default to current
         val tvDateTitle: TextView = view.findViewById(R.id.tvDateTitle)
@@ -221,8 +221,10 @@ class ExerciseDetailsFragment : Fragment() {
             etNumericInput.visibility = View.GONE
             btnSubmit.visibility = View.GONE
             btnAnalytics.visibility = View.GONE
+            btnAnalytics.visibility = View.GONE
         }
         exercisesViewModel.refreshData()
+
         exercisesViewModel.exercises.observe(viewLifecycleOwner) { exercises ->
             exercisesViewModel.exerciseTracking.observe(viewLifecycleOwner) { exerciseTracking ->
                 exercisesViewModel.users.observe(viewLifecycleOwner) { users ->
@@ -239,6 +241,9 @@ class ExerciseDetailsFragment : Fragment() {
                             .filter { it.userId == user.userId && it.exerciseId == exerciseId }
                             .maxByOrNull { it.performanceMetric ?: 0.0 }
                         UserWithPerformance(user, maxPerformance)
+                    }
+                    if(exerciseTracking.none { it.exerciseId == exerciseId }) {
+                        btnAnalytics.visibility = View.GONE
                     }
                     userAdapter.updateUsers(combinedData)
                 }
