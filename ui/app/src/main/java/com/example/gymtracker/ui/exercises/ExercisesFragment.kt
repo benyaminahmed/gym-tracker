@@ -4,6 +4,7 @@ import ExercisesViewModel
 import ExercisesViewModelFactory
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import android.widget.SearchView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.R.id.search_mag_icon
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -34,6 +36,8 @@ class ExercisesFragment : Fragment() {
     private var exercisesList: List<ExerciseWithMuscleGroup> = listOf()
     private var exercisesMap: Map<String, ExerciseWithMuscleGroup> = emptyMap()
 
+    private lateinit var muscleGroup: String
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val apiService = RetrofitService.create(requireContext())
@@ -47,10 +51,14 @@ class ExercisesFragment : Fragment() {
         adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, arrayListOf())
         binding.exercisesListView.adapter = adapter
 
+        val args = ExercisesFragmentArgs.fromBundle(requireArguments())
+        muscleGroup = args.muscleGroup
+
         exercisesViewModel.exercises.observe(viewLifecycleOwner) { exercises ->
-            exercisesList = exercises
-            exercisesMap = exercises.associateBy { it.exerciseName }
-            val exerciseNames = exercises.map { it.exerciseName }
+            // Filter exercises by the received muscle group
+            val filteredExercises = exercises.filter { it.muscleGroup == muscleGroup }
+            exercisesMap = filteredExercises.associateBy { it.exerciseName }
+            val exerciseNames = filteredExercises.map { it.exerciseName }
             adapter.clear()
             adapter.addAll(exerciseNames)
             adapter.notifyDataSetChanged()
@@ -63,6 +71,8 @@ class ExercisesFragment : Fragment() {
         exercisesViewModel.errorMessages.observe(viewLifecycleOwner) { errorMessage ->
             ErrorReporting.showError(errorMessage, binding.root)
         }
+
+        (activity as? AppCompatActivity)?.supportActionBar?.title = muscleGroup
 
         setupSearchView()
         setupListViewItemClickListener()
@@ -118,10 +128,13 @@ class ExercisesFragment : Fragment() {
 
     private fun setupListViewItemClickListener() {
         binding.exercisesListView.setOnItemClickListener { _, _, position, _ ->
+
             val selectedExerciseName = adapter.getItem(position)
-            selectedExerciseName?.let {
-                val selectedExercise = exercisesMap[it]
+            selectedExerciseName?.let { name ->
+                // Assuming exercisesMap maps names to ExerciseWithMuscleGroup objects
+                val selectedExercise = exercisesMap[name]
                 selectedExercise?.let { exercise ->
+                    // Use Safe Args for navigation, passing required arguments
                     val action = ExercisesFragmentDirections.actionNavExercisesToExerciseDetailsFragment(
                         exercise.exerciseName, exercise.exerciseId.toString()
                     )
@@ -130,6 +143,7 @@ class ExercisesFragment : Fragment() {
             }
         }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

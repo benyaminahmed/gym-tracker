@@ -3,13 +3,29 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_exercises">
+    app:startDestination="@+id/nav_muscle_groups">
 
+    <!-- Muscle Groups Fragment -->
+    <fragment
+        android:id="@+id/nav_muscle_groups"
+        android:name="com.example.gymtracker.ui.exercises.MuscleGroupsFragment"
+        android:label="Muscle Groups"
+        tools:layout="@layout/fragment_muscle_groups">
+        <action
+            android:id="@+id/action_nav_muscle_groups_to_nav_exercises"
+            app:destination="@id/nav_exercises"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
+
+    <!-- Exercises Fragment adjusted with an argument for muscleGroup -->
     <fragment
         android:id="@+id/nav_exercises"
         android:name="com.example.gymtracker.ui.exercises.ExercisesFragment"
         android:label="@string/menu_exercises"
-        tools:layout="@layout/fragment_exercises" >
+        tools:layout="@layout/fragment_exercises">
         <action
             android:id="@+id/action_nav_exercises_to_exerciseDetailsFragment"
             app:destination="@id/exerciseDetailsFragment"
@@ -17,29 +33,19 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <argument
+            android:name="muscleGroup"
+            app:argType="string" />
     </fragment>
 
-    <fragment
-        android:id="@+id/nav_analytics"
-        android:name="com.example.gymtracker.ui.analytics.AnalyticsFragment"
-        android:label="Analytics"
-        tools:layout="@layout/fragment_analytics"  >
-        <action
-            android:id="@+id/action_nav_exercises_to_analyticsDetailsFragment"
-            app:destination="@id/analyticsDetailsFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-    </fragment>
-
+    <!-- Exercise Details Fragment -->
     <fragment
         android:id="@+id/exerciseDetailsFragment"
         android:name="com.example.gymtracker.ui.exercises.ExerciseDetailsFragment"
         android:label="Exercise Details"
         tools:layout="@layout/fragment_exercise_details">
         <action
-            android:id="@+id/action_exerciseDetailsFragment_to_analyticsDetailsFragment"
+            android:id="@+id/actionExerciseDetailsFragmentToAnalyticsDetailsFragment"
             app:destination="@id/analyticsDetailsFragment" />
         <argument
             android:name="exerciseName"
@@ -47,6 +53,21 @@
         <argument
             android:name="exerciseId"
             app:argType="string" />
+    </fragment>
+
+    <!-- Analytics Fragments remain unchanged -->
+    <fragment
+        android:id="@+id/nav_analytics"
+        android:name="com.example.gymtracker.ui.analytics.AnalyticsFragment"
+        android:label="Analytics"
+        tools:layout="@layout/fragment_analytics">
+        <action
+            android:id="@+id/action_nav_exercises_to_analyticsDetailsFragment"
+            app:destination="@id/analyticsDetailsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
 
     <fragment
@@ -61,4 +82,5 @@
             android:name="exerciseId"
             app:argType="string" />
     </fragment>
+
 </navigation>

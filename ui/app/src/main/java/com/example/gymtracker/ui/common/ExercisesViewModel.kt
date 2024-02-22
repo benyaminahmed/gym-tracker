@@ -31,7 +31,6 @@ class ExercisesViewModel(private val apiService: ApiService) : ViewModel() {
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
-
     private val _postResult = MutableLiveData<Boolean>()
     val postResult: LiveData<Boolean> = _postResult
 
@@ -46,6 +45,25 @@ class ExercisesViewModel(private val apiService: ApiService) : ViewModel() {
             ?.sortedBy { it.exerciseName }
             ?: emptyList()
     }
+
+    // A LiveData property for distinct muscle groups
+    // Sort alphabetically, "Other" last
+    val muscleGroups: LiveData<List<String>> = _exercises.map { exercisesList ->
+        val sortedList = exercisesList.orEmpty()
+            .map { it.muscleGroup }
+            .distinct()
+            .sorted() // First, sort all alphabetically.
+            .toMutableList()
+
+        // If "Other" exists, remove and add it at the end.
+        if (sortedList.remove("Other")) {
+            sortedList.add("Other")
+        }
+
+        sortedList
+    }
+
+
     init {
         refreshData()
     }
