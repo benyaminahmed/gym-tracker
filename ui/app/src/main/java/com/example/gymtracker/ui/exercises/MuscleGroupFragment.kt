@@ -31,8 +31,6 @@ class MuscleGroupsFragment : Fragment() {
         val apiService = RetrofitService.create(requireContext())
         val viewModelFactory = ExercisesViewModelFactory(apiService)
         exercisesViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(ExercisesViewModel::class.java)
-
-
         _binding = FragmentMuscleGroupsBinding.inflate(inflater, container, false)
         return binding.root
     }

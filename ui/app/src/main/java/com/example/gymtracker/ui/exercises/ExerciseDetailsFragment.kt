@@ -137,7 +137,7 @@ class ExerciseDetailsFragment : Fragment() {
         val rvUsers = view.findViewById<RecyclerView>(R.id.rvUsers)
         rvUsers.layoutManager = LinearLayoutManager(context)
 
-        // Initialize userAdapter here
+        // Initialise userAdapter here
         userAdapter = UserAdapter(emptyList()) { selectedUser ->
             // Handle user selection
         }
@@ -201,7 +201,6 @@ class ExerciseDetailsFragment : Fragment() {
 
         // Format the LocalDateTime object to the required string format
         val outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-
 
         return dateTime.format(outputFormatter)
     }

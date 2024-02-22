@@ -20,7 +20,6 @@ import androidx.navigation.fragment.findNavController
 import com.example.gymtracker.databinding.FragmentAnalyticsBinding
 import com.example.gymtracker.network.RetrofitService
 import com.example.gymtracker.utils.ErrorReporting
-import com.google.android.material.snackbar.Snackbar
 
 class AnalyticsFragment : Fragment() {
 

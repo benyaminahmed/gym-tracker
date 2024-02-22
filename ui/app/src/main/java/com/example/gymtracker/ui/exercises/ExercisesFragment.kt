@@ -4,7 +4,6 @@ import ExercisesViewModel
 import ExercisesViewModelFactory
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +11,6 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.SearchView
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.R.id.search_mag_icon
 import androidx.appcompat.app.AppCompatActivity
@@ -21,11 +19,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.gymtracker.databinding.FragmentExercisesBinding
-import com.example.gymtracker.network.dto.Exercise
 import com.example.gymtracker.network.RetrofitService
 import com.example.gymtracker.network.dto.ExerciseWithMuscleGroup
 import com.example.gymtracker.utils.ErrorReporting
-import com.google.android.material.snackbar.Snackbar
 
 class ExercisesFragment : Fragment() {
 

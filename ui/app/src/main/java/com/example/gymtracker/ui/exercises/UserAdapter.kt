@@ -66,6 +66,7 @@ class UserAdapter(private var users: List<UserWithPerformance>, private val onUs
         this.users = newUsers
         notifyDataSetChanged()
     }
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
         val up = users[position]
         holder.bind(up, up.user.userId == selectedUserId)

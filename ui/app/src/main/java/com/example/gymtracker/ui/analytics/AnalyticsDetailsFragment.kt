@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -24,27 +23,18 @@ import com.anychart.enums.TooltipPositionMode
 import com.anychart.data.Set
 import com.example.gymtracker.R
 import com.example.gymtracker.databinding.FragmentAnalyticsDetailsBinding
-import com.example.gymtracker.databinding.FragmentExercisesBinding
 import com.example.gymtracker.network.RetrofitService
 import com.example.gymtracker.network.dto.ExerciseTracking
 import com.example.gymtracker.ui.exercises.ExerciseDetailsFragmentArgs
 import com.example.gymtracker.utils.ErrorReporting
-import com.google.android.material.snackbar.Snackbar
-import java.math.BigDecimal
-import java.math.RoundingMode
-import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 class AnalyticsDetailsFragment : Fragment() {
 
-
     private var _binding: FragmentAnalyticsDetailsBinding? = null
-
     private val binding get() = _binding!!
-
     private lateinit var exercisesViewModel: ExercisesViewModel
-
     private lateinit var anyChartView: AnyChartView
     private lateinit var exerciseId: String
     private lateinit var progressBar: ProgressBar
@@ -55,14 +45,14 @@ class AnalyticsDetailsFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_analytics_details, container, false)
 
-        // Initialize ProgressBar from layout
+        // Initialise ProgressBar from layout
         progressBar = view.findViewById(R.id.pbLoadingAnalyticsDetails)
 
         val apiService = RetrofitService.create(requireContext())
         val viewModelFactory = ExercisesViewModelFactory(apiService)
         exercisesViewModel = ViewModelProvider(this, viewModelFactory).get(ExercisesViewModel::class.java)
 
-        // Initialize AnyChartView from layout
+        // Initialise AnyChartView from layout
         anyChartView = view.findViewById(R.id.any_chart_view)
 
         // Initially hide the AnyChartView while data is being fetched
@@ -153,7 +143,7 @@ class AnalyticsDetailsFragment : Fragment() {
             series.hovered().markers().enabled(true)
             series.hovered().markers().type(MarkerType.CIRCLE).size(4.0).stroke("1.5 #000")
 
-            // Set series color from the map
+            // Set series colour from the map
             userColors[firstName]?.let { seriesColor ->
                 series.color(seriesColor)
             }

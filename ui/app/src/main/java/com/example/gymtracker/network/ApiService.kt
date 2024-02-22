@@ -1,6 +1,5 @@
 package com.example.gymtracker.network
 
-import com.example.gymtracker.network.dto.Exercise
 import com.example.gymtracker.network.dto.ExerciseTracking
 import com.example.gymtracker.network.dto.ExerciseTrackingRequest
 import com.example.gymtracker.network.dto.ExerciseWithMuscleGroup
@@ -20,7 +19,7 @@ interface ApiService {
 
     @GET("/ExerciseTracking")
     fun getExerciseTracking(): Call<List<ExerciseTracking>>
+
     @POST("/ExerciseTracking")
     suspend fun postExerciseTracking(@Body exerciseTracking: ExerciseTrackingRequest): Response<Void>
-
 }

@@ -2,7 +2,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.LiveData
 import com.example.gymtracker.network.ApiService
-import com.example.gymtracker.network.dto.Exercise
 import com.example.gymtracker.network.dto.User
 import retrofit2.Call
 import retrofit2.Callback
