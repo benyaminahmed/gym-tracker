@@ -47,7 +47,7 @@ class ExercisesFragment : Fragment() {
         _binding = FragmentExercisesBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        // Initialize the adapter with an empty list
+        // Initialise the adapter with an empty list
         adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, arrayListOf())
         binding.exercisesListView.adapter = adapter
 
@@ -82,9 +82,8 @@ class ExercisesFragment : Fragment() {
     private fun setupSearchView() {
         // Make the SearchView always expanded
         binding.searchExercise.apply {
-            setIconifiedByDefault(false) // Always show the search text input
+            setIconifiedByDefault(false)
 
-            // Optional: if you want to remove the search icon when always expanded
             findViewById<ImageView>(search_mag_icon)
                 ?.apply {
                     layoutParams = LinearLayout.LayoutParams(0, 0)
@@ -93,7 +92,6 @@ class ExercisesFragment : Fragment() {
 
             binding.searchExercise.queryHint = "Search"
 
-            // Set listeners for search text changes
             binding.searchExercise.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     performFiltering(query)
@@ -131,10 +129,8 @@ class ExercisesFragment : Fragment() {
 
             val selectedExerciseName = adapter.getItem(position)
             selectedExerciseName?.let { name ->
-                // Assuming exercisesMap maps names to ExerciseWithMuscleGroup objects
                 val selectedExercise = exercisesMap[name]
                 selectedExercise?.let { exercise ->
-                    // Use Safe Args for navigation, passing required arguments
                     val action = ExercisesFragmentDirections.actionNavExercisesToExerciseDetailsFragment(
                         exercise.exerciseName, exercise.exerciseId.toString()
                     )

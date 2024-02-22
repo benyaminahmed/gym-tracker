@@ -63,7 +63,6 @@ class ExercisesViewModel(private val apiService: ApiService) : ViewModel() {
         sortedList
     }
 
-
     init {
         refreshData()
     }
