@@ -165,17 +165,4 @@ class AnalyticsDetailsFragment : Fragment() {
 
         anyChartView.setChart(cartesian)
     }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun calculateMonthlyAverages(exerciseTrackingList: List<ExerciseTracking>): Map<YearMonth, Double> {
-        val groupedByYearMonth = exerciseTrackingList.groupBy {
-            YearMonth.from(it.createdDate)
-        }
-
-        return groupedByYearMonth.mapValues { (_, values) ->
-            BigDecimal(values.map { it.performanceMetric }.average())
-                .setScale(2, RoundingMode.HALF_UP)
-                .toDouble()
-        }
-    }
 }

@@ -21,6 +21,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.gymtracker.databinding.FragmentExercisesBinding
 import com.example.gymtracker.network.dto.Exercise
 import com.example.gymtracker.network.RetrofitService
+import com.example.gymtracker.network.dto.ExerciseWithMuscleGroup
 import com.example.gymtracker.utils.ErrorReporting
 import com.google.android.material.snackbar.Snackbar
 
@@ -30,8 +31,8 @@ class ExercisesFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var adapter: ArrayAdapter<String>
-    private var exercisesList: List<Exercise> = listOf()
-    private var exercisesMap: Map<String, Exercise> = emptyMap()
+    private var exercisesList: List<ExerciseWithMuscleGroup> = listOf()
+    private var exercisesMap: Map<String, ExerciseWithMuscleGroup> = emptyMap()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {

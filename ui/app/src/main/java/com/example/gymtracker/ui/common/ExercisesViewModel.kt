@@ -13,13 +13,14 @@ import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.example.gymtracker.network.dto.ExerciseTracking
 import com.example.gymtracker.network.dto.ExerciseTrackingRequest
+import com.example.gymtracker.network.dto.ExerciseWithMuscleGroup
 import com.example.gymtracker.network.dto.TrackedExercise
 import kotlinx.coroutines.launch
 
 class ExercisesViewModel(private val apiService: ApiService) : ViewModel() {
 
-    private val _exercises = MutableLiveData<List<Exercise>>()
-    val exercises: LiveData<List<Exercise>> = _exercises
+    private val _exercises = MutableLiveData<List<ExerciseWithMuscleGroup>>()
+    val exercises: LiveData<List<ExerciseWithMuscleGroup>> = _exercises
 
     private val _users = MutableLiveData<List<User>>()
     val users: LiveData<List<User>> = _users
@@ -30,7 +31,6 @@ class ExercisesViewModel(private val apiService: ApiService) : ViewModel() {
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
-    private var exercisesList: List<Exercise> = listOf()
 
     private val _postResult = MutableLiveData<Boolean>()
     val postResult: LiveData<Boolean> = _postResult
@@ -58,8 +58,8 @@ class ExercisesViewModel(private val apiService: ApiService) : ViewModel() {
 
     private fun fetchExercises() {
         _isLoading.value = true
-        apiService.getExercises().enqueue(object : Callback<List<Exercise>> {
-            override fun onResponse(call: Call<List<Exercise>>, response: Response<List<Exercise>>) {
+        apiService.getExercises().enqueue(object : Callback<List<ExerciseWithMuscleGroup>> {
+            override fun onResponse(call: Call<List<ExerciseWithMuscleGroup>>, response: Response<List<ExerciseWithMuscleGroup>>) {
                 _isLoading.postValue(false)
                 if (response.isSuccessful) {
                     val sortedExercises = response.body()?.sortedBy { it.exerciseName } ?: emptyList()
@@ -70,7 +70,7 @@ class ExercisesViewModel(private val apiService: ApiService) : ViewModel() {
                 }
             }
 
-            override fun onFailure(call: Call<List<Exercise>>, t: Throwable) {
+            override fun onFailure(call: Call<List<ExerciseWithMuscleGroup>>, t: Throwable) {
                 _isLoading.postValue(false)
                 _errorMessages.postValue("Error fetching exercises: ${t.message}")
             }
