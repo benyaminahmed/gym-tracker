@@ -10,7 +10,7 @@ insert into public.muscle_group
 )
 values 
 (
-    'Chest'
+    'Chest & Triceps'
 );
 
 insert into public.muscle_group
@@ -19,7 +19,7 @@ insert into public.muscle_group
 )
 values 
 (
-    'Back'
+    'Back & Biceps'
 );
 
 insert into public.muscle_group
@@ -28,7 +28,7 @@ insert into public.muscle_group
 )
 values 
 (
-    'Shoulder'
+    'Shoulders'
 );
 
 insert into public.muscle_group
@@ -37,41 +37,5 @@ insert into public.muscle_group
 )
 values 
 (
-    'Arm'
-);
-
-insert into public.muscle_group
-(
-    muscle_group
-)
-values 
-(
-    'Abdominal'
-);
-
-insert into public.muscle_group
-(
-    muscle_group
-)
-values 
-(
-    'Leg'
-);
-
-insert into public.muscle_group
-(
-    muscle_group
-)
-values 
-(
-    'Hip'
-);
-
-insert into public.muscle_group
-(
-    muscle_group
-)
-values 
-(
-    'Neck'
+    'Quads & Hamstrings'
 );
