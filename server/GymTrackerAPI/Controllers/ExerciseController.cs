@@ -2,6 +2,7 @@
 using GymTrackerAPI.DataTypes;
 using GymTrackerAPI.Data;
 using Microsoft.EntityFrameworkCore;
+using GymTrackerAPI.DataTypes.Models;
 
 namespace GymTrackerAPI.Controllers
 {
@@ -17,9 +18,25 @@ namespace GymTrackerAPI.Controllers
         }
 
         [HttpGet(Name = "GetExercises")]
-        public async Task<IEnumerable<Exercise>> Get()
+        public async Task<IEnumerable<ExerciseWithMuscleGroup>> Get()
         {
-            return await _context.Exercise.ToListAsync();
+            var exercisesWithMuscleGroups = await (
+                from e in _context.Exercise
+                join emg in _context.ExerciseMuscleGroup on e.ExerciseId equals emg.ExerciseId into emgGroup
+                from subemg in emgGroup.DefaultIfEmpty()
+                join mg in _context.MuscleGrouping on subemg.MuscleGroupId equals mg.MuscleGroupId into mgGroup
+                from submg in mgGroup.DefaultIfEmpty()
+                select new ExerciseWithMuscleGroup
+                {
+                    ExerciseId = e.ExerciseId,
+                    ExerciseName = e.ExerciseName,
+                    Unit = e.Unit,
+                    CreatedDate = e.CreatedDate,
+                    MuscleGroup = submg != null ? submg.MuscleGroup : "Other"
+                }).ToListAsync();
+
+            return exercisesWithMuscleGroups;
         }
+
     }
 }

@@ -58,6 +58,12 @@ INSERT INTO public.exercise_muscle_group (exercise_id, muscle_group_id)
     FROM exercise e, muscle_group mg 
     WHERE e.exercise = 'Leg Extension' AND mg.muscle_group = legs;
 
+-- Leg Press
+INSERT INTO public.exercise_muscle_group (exercise_id, muscle_group_id)
+    SELECT e.exercise_id, mg.muscle_group_id
+    FROM exercise e, muscle_group mg 
+    WHERE e.exercise = 'Leg Press' AND mg.muscle_group = legs;
+
 -- Hanging
 INSERT INTO public.exercise_muscle_group (exercise_id, muscle_group_id)
     SELECT e.exercise_id, mg.muscle_group_id
@@ -92,7 +98,7 @@ INSERT INTO public.exercise_muscle_group (exercise_id, muscle_group_id)
 INSERT INTO public.exercise_muscle_group (exercise_id, muscle_group_id)
     SELECT e.exercise_id, mg.muscle_group_id
     FROM exercise e, muscle_group mg 
-    WHERE e.exercise = 'Dumbell Lateral Raises' AND mg.muscle_group = shoulders;
+    WHERE e.exercise = 'Dumbbell Lateral Raises' AND mg.muscle_group = shoulders;
 
 -- Incline 30° Dumbbell Chest Press
 INSERT INTO public.exercise_muscle_group (exercise_id, muscle_group_id)

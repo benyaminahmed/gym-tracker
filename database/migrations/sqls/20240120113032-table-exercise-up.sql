@@ -8,7 +8,6 @@ CREATE TABLE public.exercise (
 
 -- Chest Exercises
 INSERT INTO public.exercise (exercise, unit) VALUES ('Bench Press', 'kg');
-INSERT INTO public.exercise (exercise, unit) VALUES ('Incline Bench Press', 'kg');
 INSERT INTO public.exercise (exercise, unit) VALUES ('Decline Bench Press', 'kg');
 INSERT INTO public.exercise (exercise, unit) VALUES ('Cable Pec Fly', 'kg');
 INSERT INTO public.exercise (exercise, unit) VALUES ('Incline 30° Dumbbell Chest Press', 'kg');
@@ -35,7 +34,7 @@ INSERT INTO public.exercise (exercise, unit) VALUES ('Bicep Curls', 'kg');
 INSERT INTO public.exercise (exercise, unit) VALUES ('Dumbbell Hammer Bicep Curls', 'kg');
 INSERT INTO public.exercise (exercise, unit) VALUES ('Dumbbell Curls 21''s', 'kg');
 INSERT INTO public.exercise (exercise, unit) VALUES ('Triceps Cable Rope', 'kg');
-INSERT INTO public.exercise (exercise, unit) VALUES ('Dumbell Triceps French Press', 'kg');
+INSERT INTO public.exercise (exercise, unit) VALUES ('Dumbbell Triceps French Press', 'kg');
 INSERT INTO public.exercise (exercise, unit) VALUES ('Tricep Dips', 'reps');
 INSERT INTO public.exercise (exercise, unit) VALUES ('Supination Narrow Grip Pull', 'kg');
 
