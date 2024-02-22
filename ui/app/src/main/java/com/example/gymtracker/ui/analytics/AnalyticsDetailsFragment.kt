@@ -102,33 +102,44 @@ class AnalyticsDetailsFragment : Fragment() {
         cartesian.background().stroke("#2A2A2A")
 
         val unit = exerciseTrackingList.first().unit
-        cartesian.title("Average Monthly Performance ($unit)")
+        cartesian.title("Performance Over Time ($unit)")
 
-        // Identify all unique time periods (YearMonth), sorted
-        val allDates = exerciseTrackingList.map { YearMonth.from(it.createdDate) }.toSortedSet()
+        // Predefined colour map
+        val userColors = mutableMapOf<String, String>().apply {
+            put("Imran", "#C71585") // Bright Purple
+            put("Yusuf", "#00CED1") // Teal
+            put("Benyamin", "#00FF00") // Lime Green
+        }
+
+        val allUserNames = exerciseTrackingList.map { it.firstName }.distinct()
+        val colorsPool = listOf("#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff", "#00ffff", "#000000") // Example colors
+        allUserNames.forEachIndexed { index, userName ->
+            userColors.putIfAbsent(userName, colorsPool[index % colorsPool.size])
+        }
+
+        // Identify all unique dates (sorted)
+        val allDates = exerciseTrackingList.map { it.createdDate.toLocalDate() }.sorted()
 
         // Group tracking data by user
         val trackingByUser = exerciseTrackingList.groupBy { it.firstName }
 
         trackingByUser.forEach { (firstName, trackingList) ->
-            val monthlyAverages = calculateMonthlyAverages(trackingList)
+            val sortedTrackingList = trackingList.sortedBy { it.createdDate }
 
-            // Prepare series data, ensuring each time period is covered
-            val sortedDates = allDates.toList()
+            // Prepare series data, ensuring each date is covered
             val seriesData: MutableList<DataEntry> = mutableListOf()
-            var lastKnownAverage: Double? = null
+            var lastKnownMetric: Double? = null
 
-            for (date in sortedDates) {
-                val average = monthlyAverages[date]
-                if (average != null) {
-                    lastKnownAverage = average
-                    // Format the date as MM/YY
-                    val formattedDate = date.format(DateTimeFormatter.ofPattern("MM/yy"))
-                    seriesData.add(ValueDataEntry(formattedDate, average))
-                } else if (lastKnownAverage != null) {
-                    // Use the last known average if the current date doesn't have data
-                    val formattedDate = date.format(DateTimeFormatter.ofPattern("MM/yy"))
-                    seriesData.add(ValueDataEntry(formattedDate, lastKnownAverage))
+            for (date in allDates) {
+                val trackingForDate = sortedTrackingList.find { it.createdDate.toLocalDate() == date }
+                if (trackingForDate != null) {
+                    lastKnownMetric = trackingForDate.performanceMetric
+                }
+
+                // Format the date as dd/MM/YY for readability
+                val formattedDate = date.format(DateTimeFormatter.ofPattern("dd/MM/yy"))
+                if (lastKnownMetric != null) {
+                    seriesData.add(ValueDataEntry(formattedDate, lastKnownMetric))
                 }
             }
 
@@ -138,10 +149,14 @@ class AnalyticsDetailsFragment : Fragment() {
 
             val series = cartesian.line(seriesMapping)
             series.name(firstName)
-            series.tooltip()
-                .format("$firstName: {%Value} $unit")
+            series.tooltip().format("$firstName: {%Value} $unit")
             series.hovered().markers().enabled(true)
             series.hovered().markers().type(MarkerType.CIRCLE).size(4.0).stroke("1.5 #000")
+
+            // Set series color from the map
+            userColors[firstName]?.let { seriesColor ->
+                series.color(seriesColor)
+            }
         }
 
         cartesian.legend().enabled(true)

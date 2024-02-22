@@ -55,7 +55,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="numberDecimal"
-        android:hint="Enter achievement"
+        android:hint="@string/enter_achievement"
         android:layout_marginTop="8dp"/>
 
     <!-- Submit Button -->
@@ -63,7 +63,18 @@
         android:id="@+id/btnSubmit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Submit"
+        android:text="@string/submit"
         android:layout_marginTop="8dp"/>
 
+    <!-- Button for Analytics Text (without background to appear as secondary) -->
+    <TextView
+        android:id="@+id/btnAnalytics"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/analytics"
+        android:padding="8dp"
+        android:gravity="center"
+        android:clickable="true"
+        android:focusable="true"
+        android:textAppearance="@style/TextAppearance.AppCompat.Button"/>
 </LinearLayout>

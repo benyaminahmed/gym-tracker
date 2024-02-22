@@ -38,6 +38,9 @@
         android:name="com.example.gymtracker.ui.exercises.ExerciseDetailsFragment"
         android:label="Exercise Details"
         tools:layout="@layout/fragment_exercise_details">
+        <action
+            android:id="@+id/action_exerciseDetailsFragment_to_analyticsDetailsFragment"
+            app:destination="@id/analyticsDetailsFragment" />
         <argument
             android:name="exerciseName"
             app:argType="string" />
