@@ -80,7 +80,7 @@ class ExerciseDetailsFragment : Fragment() {
         // Set date to default to current
         val tvDateTitle: TextView = view.findViewById(R.id.tvDateTitle)
         val currentDate = Calendar.getInstance()
-        val dateFormat = SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault())
+        val dateFormat = SimpleDateFormat("dd-MMM-yyyy", Locale.US)
         val currentDateString = dateFormat.format(currentDate.time)
         tvDateTitle.text = currentDateString
 
